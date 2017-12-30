@@ -1,5 +1,5 @@
 # Gulp HAML Boilerplate
-:boom: A simple Gulp workflow with HAML to get you started quickly!
+A simple Gulp workflow with Haml templating to get started quickly and painlessly!
 
 ## Start
 
@@ -92,4 +92,51 @@ gulp-haml-boilerplate/
 
 ## Configurable Options
 
-Tbd...
+Set your js and sass files and make sure to put them in correct order for concat.
+
+```
+var files = {
+  js: {
+    src: [
+      './src/js/vendor/jquery-2.2.4.js',
+      './src/js/vendor/bootstrap.js',
+      './src/js/all.js']
+  },
+  sass: {
+    src: [
+      './src/sass/vendor/bootstrap.scss',
+      './src/sass/vendor/font-awesome.scss',
+      './src/sass/all.scss']
+  }
+}
+```
+
+Set your paths. You can modify depending on your workflow/naming conventions.
+
+```
+var paths = {
+    watch: {
+      server: './dist/'
+    },
+    images: {
+        input: './src/img/**/*',
+        output: './dist/img/'
+    },
+    fonts: {
+        input: './src/fonts/**/*',
+        output: './dist/fonts/'
+    },
+    js: {
+        input: './src/js/**/*.js',
+        output: './dist/js/'
+    },
+    css: {
+        input: './src/sass/**/*.{scss,sass}',
+        output: './dist/css/'
+    },
+    haml: {
+        input: './src/haml/**/*.haml',
+        output: './dist/'
+    }
+};
+```
