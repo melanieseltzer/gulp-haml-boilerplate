@@ -23,6 +23,26 @@ Install dependencies:
 npm install
 ```
 
+## Task runners
+
+Default task to bundle everything and serve locally:
+
+```
+gulp
+```
+
+Deploy `dist` directory to GitHub Pages (gh-pages branch):
+
+```
+gulp deploy
+```
+
+Delete dist folder for easy cleanup:
+
+```
+gulp clean
+```
+
 ## Folder Structure
 
 Develop your site in the `src` directory. Run `gulp` and your files are compiled to `dist` directory. This folder contains your processed (un-minified) CSS/JS/HTML files, the optimized assets (images), fonts, and also minified/uglified CSS/JS/HTML ready for production.
@@ -69,26 +89,6 @@ gulp-haml-boilerplate/
 |—— package.json
 |—— README.md
 ```
-
-## Task runners
-
-Default task to bundle everything and serve locally:
-
-``
-gulp
-``
-
-Deploy `dist` directory to GitHub Pages (gh-pages branch):
-
-``
-gulp deploy
-``
-
-Delete dist folder for easy cleanup:
-
-``
-gulp clean
-``
 
 ## Configurable Options
 
