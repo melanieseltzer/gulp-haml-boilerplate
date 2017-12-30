@@ -43,6 +43,12 @@ Delete dist folder for easy cleanup:
 gulp clean
 ```
 
+If you need beautified (unminified) version of your html files:
+
+```
+gulp html
+```
+
 ## Folder Structure
 
 Develop your site in the `src` directory. Run `gulp` and your files are compiled to `dist` directory. This folder contains your processed (un-minified) CSS/JS/HTML files, the optimized assets (images), fonts, and also minified/uglified CSS/JS/HTML ready for production.
