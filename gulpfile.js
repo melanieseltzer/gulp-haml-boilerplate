@@ -160,10 +160,10 @@ gulp.task('deploy', function() {
 
 /*
   EASY CLEANUP
-  Delete dist/html folder
+  Delete dist directory
 */
 gulp.task('clean', function () {
-  return gulp.src(['dist', 'html'], {read: false})
+  return gulp.src(['dist'], {read: false})
     .pipe(clean());
 });
 
