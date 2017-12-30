@@ -37,7 +37,7 @@ Deploy `dist` directory to GitHub Pages (gh-pages branch):
 gulp deploy
 ```
 
-Delete dist folder for easy cleanup:
+Delete `dist` directory for easy cleanup:
 
 ```
 gulp clean
