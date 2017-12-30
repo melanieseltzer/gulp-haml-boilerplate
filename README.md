@@ -3,16 +3,21 @@
 
 ## Start
 
-This boilerplate uses [Node.js](https://nodejs.org/en/) and [Gulp](https://gulpjs.com/).
+This boilerplate uses:
 
-Clone repo and cd into project directory
+- [Node.js](https://nodejs.org/en/)
+- [Gulp](https://gulpjs.com/)
+- [Sass](http://sass-lang.com/)
+- [Haml](http://haml.info/)
+
+Clone repo and cd into project directory:
 
 ```
 git clone git@github.com:melanieseltzer/gulp-haml-boilerplate.git
 cd gulp-haml-boilerplate
 ```
 
-Install dependencies
+Install dependencies:
 
 ```
 npm install
@@ -20,9 +25,7 @@ npm install
 
 ## Folder Structure
 
-Develop your site in the `src` directory. We use [Sass](http://sass-lang.com/) and [Haml](http://haml.info/) for our preprocessors.
-
-Run Gulp and your files are compiled to `dist` directory. This folder contains your processed (un-minified) CSS/JS/HTML files, the optimized assets (images), fonts, and also minified/uglified CSS/JS/HTML ready for production.
+Develop your site in the `src` directory. Run `gulp` and your files are compiled to `dist` directory. This folder contains your processed (un-minified) CSS/JS/HTML files, the optimized assets (images), fonts, and also minified/uglified CSS/JS/HTML ready for production.
 
 ```
 gulp-haml-boilerplate/
@@ -69,19 +72,19 @@ gulp-haml-boilerplate/
 
 ## Task runners
 
-Bundle everything and serve locally
+Default task to bundle everything and serve locally:
 
 ``
 gulp
 ``
 
-Deploy `dist` directory to GitHub Pages (gh-pages branch)
+Deploy `dist` directory to GitHub Pages (gh-pages branch):
 
 ``
 gulp deploy
 ``
 
-Delete dist folders for easy cleanup
+Delete dist folder for easy cleanup:
 
 ``
 gulp clean
