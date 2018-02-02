@@ -26,22 +26,30 @@ npm install
 
 ## Task runners
 
-Bundle everything and serve locally:
+Build and serve locally
 
 ```
 gulp serve
 ```
 
-Deploy `dist` directory to GitHub Pages (gh-pages branch):
+Build the `dist` folder for deployment
+
+```
+gulp build
+```
+
+Deploy `dist` directory to GitHub Pages (gh-pages branch)
 
 ```
 gulp deploy
 ```
 
-Delete `tmp` folder for easy cleanup
+Delete `tmp` and `dist` folders for easy cleanup
 
 ```
-gulp clean
+gulp clean (both)
+gulp clean:tmp
+gulp clean:dist
 ```
 
 ## Folder Structure
