@@ -13,10 +13,11 @@ var sass = require('gulp-sass');
 var uglify = require("gulp-uglify");
 var useref = require('gulp-useref');
 
-/*
-  PATHS
-  Set your file paths here, modify depending on your workflow/naming
-*/
+/* ------------------------- *
+ *          PATHS
+ * ------------------------- */
+
+// Set your file paths here, modify depending on your workflow/naming
 var paths = {
     server: 'tmp',
     images: {
@@ -109,7 +110,7 @@ gulp.task('copy:images', function() {
 });
 
 /* ------------------------- *
- *       BUILD
+ *          BUILD
  * ------------------------- */
 
 // Build: Assets
