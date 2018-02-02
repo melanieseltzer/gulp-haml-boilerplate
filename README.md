@@ -1,5 +1,5 @@
 # Gulp HAML Boilerplate
-A simple Gulp workflow with Haml templating to get started quickly and painlessly!
+A simple front-end Gulp workflow to get you up and coding quickly and painlessly!
 
 ## Start
 
@@ -9,6 +9,7 @@ This boilerplate uses:
 - [Gulp](https://gulpjs.com/)
 - [Sass](http://sass-lang.com/)
 - [Haml](http://haml.info/)
+- [Babel](https://babeljs.io/)
 
 Clone repo and cd into project directory:
 
@@ -25,10 +26,10 @@ npm install
 
 ## Task runners
 
-Default task to bundle everything and serve locally:
+Bundle everything and serve locally:
 
 ```
-gulp
+gulp serve
 ```
 
 Deploy `dist` directory to GitHub Pages (gh-pages branch):
@@ -37,40 +38,28 @@ Deploy `dist` directory to GitHub Pages (gh-pages branch):
 gulp deploy
 ```
 
-Delete `dist` directory for easy cleanup:
+Delete `tmp` folder for easy cleanup
 
 ```
 gulp clean
 ```
 
-If you need beautified (unminified) version of your html files:
-
-```
-gulp html
-```
-
 ## Folder Structure
 
-Develop your site in the `src` directory. Run `gulp` and your files are compiled to `dist` directory. This folder contains your processed (un-minified) CSS/JS/HTML files, the optimized assets (images), fonts, and also minified/uglified CSS/JS/HTML ready for production.
+Develop your site in the `src` directory. Run `gulp` and your files are compiled to `tmp` and then minified to `dist` for production.
 
 ```
 gulp-haml-boilerplate/
 |—— dist/
 |   |—— css/
-|   |   |—— vendor/
-|   |   |   |—— # your vendor files
-|   |   |—— all.css
 |   |   |—— all.min.css (packaged and minified)
 |   |—— fonts/
 |   |   |—— # font files
 |   |—— img/
-|   |   |—— # optimized image files
+|   |   |—— # optimized images
 |   |—— js/
-|   |   |—— vendor/
-|   |   |   |—— # your vendor files
-|   |   |—— all.js
 |   |   |—— all.min.js (packaged and minified)
-|   |—— test-directory/
+|   |—— somedirectory/
 |   |   |—— index.html
 |   |—— index.html
 |—— src/
@@ -90,6 +79,22 @@ gulp-haml-boilerplate/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
 |   |   |—— all.scss (your custom sass)
+|—— tmp/
+|   |—— css/
+|   |   |—— vendor/
+|   |   |   |—— # your vendor files
+|   |   |—— styles.css
+|   |—— fonts/
+|   |   |—— # font files
+|   |—— img/
+|   |   |—— # optimized images
+|   |—— js/
+|   |   |—— vendor/
+|   |   |   |—— # your vendor files
+|   |   |—— app.js
+|   |—— somedirectory/
+|   |   |—— index.html
+|   |—— index.html
 |—— .gitignore
 |—— gulfile.js
 |—— package.json
@@ -98,51 +103,39 @@ gulp-haml-boilerplate/
 
 ## Configurable Options
 
-Set your js and sass files and make sure to put them in correct order for concat.
-
-```
-var files = {
-  js: {
-    src: [
-      './src/js/vendor/jquery-2.2.4.js',
-      './src/js/vendor/bootstrap.js',
-      './src/js/all.js']
-  },
-  sass: {
-    src: [
-      './src/sass/vendor/bootstrap.scss',
-      './src/sass/vendor/font-awesome.scss',
-      './src/sass/all.scss']
-  }
-}
-```
-
 Set your paths. You can modify depending on your workflow/naming conventions.
 
 ```
 var paths = {
-    watch: {
-      server: './dist/'
-    },
+    server: 'tmp',
     images: {
-        input: './src/img/**/*',
-        output: './dist/img/'
+        src: 'src/img/**/*',
+        dist: 'dist/img'
     },
     fonts: {
-        input: './src/fonts/**/*',
-        output: './dist/fonts/'
+        src: 'src/fonts/**/*',
+        dist: 'dist/fonts'
     },
     js: {
-        input: './src/js/**/*.js',
-        output: './dist/js/'
+        src: 'src/js/**/*.js',
+        tmp: 'tmp/js',
+        dist: 'dist/js'
     },
     css: {
-        input: './src/sass/**/*.{scss,sass}',
-        output: './dist/css/'
+        src: 'src/sass/**/*.{css,scss,sass}',
+        tmp: 'tmp/css',
+        dist: 'dist/css'
     },
     haml: {
-        input: './src/haml/**/*.haml',
-        output: './dist/'
+        src: 'src/haml/**/*.haml'
+    },
+    html: {
+        tmp: 'tmp',
+        dist: 'dist'
+    },
+    useref: {
+        tmp: 'tmp/**/*.html',
+        dist: 'dist'
     }
 };
 ```

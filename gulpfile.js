@@ -1,173 +1,171 @@
 var gulp = require('gulp');
-var browserSync = require('browser-sync').create();
+var babel = require('gulp-babel');
+var browsersync = require('browser-sync').create();
 var clean = require('gulp-clean');
-var cleanCSS = require('gulp-clean-css');
-var concat = require('gulp-concat');
+var cleancss = require('gulp-clean-css');
 var deploy = require('gulp-gh-pages');
+var gulpif = require('gulp-if');
 var haml = require('gulp-haml');
 var htmlbeautify = require('gulp-html-beautify');
+var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
 var sass = require('gulp-sass');
 var uglify = require("gulp-uglify");
-
-/*
-  FILES
-  Set your js and sass files here
-  Make sure to put them in correct order for concat
-*/
-var files = {
-  js: {
-    src: [
-      './src/js/vendor/jquery-2.2.4.js',
-      './src/js/vendor/bootstrap.js',
-      './src/js/all.js']
-  },
-  sass: {
-    src: [
-      './src/sass/vendor/bootstrap.scss',
-      './src/sass/vendor/font-awesome.scss',
-      './src/sass/all.scss']
-  }
-}
+var useref = require('gulp-useref');
 
 /*
   PATHS
   Set your file paths here, modify depending on your workflow/naming
 */
 var paths = {
-    watch: {
-      server: './dist/'
-    },
+    server: 'tmp',
     images: {
-        input: './src/img/**/*',
-        output: './dist/img/'
+        src: 'src/img/**/*',
+        tmp: 'tmp/img',
+        dist: 'dist/img'
     },
     fonts: {
-        input: './src/fonts/**/*',
-        output: './dist/fonts/'
+        src: 'src/fonts/**/*',
+        tmp: 'tmp/fonts',
+        dist: 'dist/fonts'
     },
     js: {
-        input: './src/js/**/*.js',
-        output: './dist/js/'
+        src: 'src/js/**/*.js',
+        tmp: 'tmp/js',
+        dist: 'dist/js'
     },
     css: {
-        input: './src/sass/**/*.{scss,sass}',
-        output: './dist/css/'
+        src: 'src/sass/**/*.{css,scss,sass}',
+        tmp: 'tmp/css',
+        dist: 'dist/css'
     },
     haml: {
-        input: './src/haml/**/*.haml',
-        output: './dist/'
+        src: 'src/haml/**/*.haml'
+    },
+    html: {
+        tmp: 'tmp',
+        dist: 'dist'
+    },
+    useref: {
+        tmp: 'tmp/**/*.html',
+        dist: 'dist'
     }
 };
 
-/*
-  CSS
-  Compile from sass > css and copy to dist folder, then concat and minify for production
-  Add to stream to watch for changes
-*/
-gulp.task('css', function(){
-  return gulp.src(files.sass.src, {base: './src/sass'})
+/* ------------------------- *
+ *       PREPROCESSING
+ * ------------------------- */
+
+// Compile: Sass
+// Compile from Sass to vanilla CSS
+gulp.task('compile:sass', function(){
+  return gulp.src(paths.css.src)
     .pipe(sass())
-    .pipe(gulp.dest(paths.css.output))
-    .pipe(concat('all.min.css'))
-    .pipe(cleanCSS())
-    .pipe(gulp.dest(paths.css.output))
-    .pipe(browserSync.stream());
+    .pipe(gulp.dest(paths.css.tmp))
+    .pipe(browsersync.stream());
 });
 
-/*
-  JS
-  Copy to dist folder then concat and uglify for production
-  Add to stream to watch for changes
-*/
-gulp.task('js', function() {
-  return gulp.src(files.js.src, {base: './src/js'})
-    .pipe(gulp.dest(paths.js.output))
-    .pipe(concat('all.min.js'))
-    .pipe(uglify())
-    .pipe(gulp.dest(paths.js.output))
-    .pipe(browserSync.stream());
-});
-
-/*
-  HAML
-  Compile to vanilla html
-  Add to stream to watch for changes
-*/
-gulp.task('haml', function(){
-  return gulp.src(paths.haml.input)
+// Compile: Haml
+// Compile from Haml to vanilla HTML
+gulp.task('compile:haml', function(){
+  return gulp.src(paths.haml.src)
     .pipe(haml())
-    .pipe(gulp.dest(paths.haml.output))
-    .pipe(browserSync.stream());
+    .pipe(htmlbeautify({indent_size: 2}))
+    .pipe(gulp.dest(paths.html.tmp))
+    .pipe(browsersync.stream());
 });
 
-/*
-  HTML BEAUTIFY
-  If you need beautified (unminified) version of your html files
-*/
-gulp.task('html', ['haml'], function() {
-  var options = {
-    indentSize: 2
-  };
-  gulp.src('./dist/**/*.html')
-    .pipe(htmlbeautify(options))
-    .pipe(gulp.dest('./html'));
+// Compile: Js
+// Compile from ES6 to vanilla JavaScript
+gulp.task('compile:js', function() {
+  return gulp.src(paths.js.src)
+    .pipe(babel({
+        presets: ['env']
+    }))
+    .pipe(gulp.dest(paths.js.tmp))
+    .pipe(browsersync.stream());
 });
 
-/*
-  FONTS
-  Copy to dist folder for production
-*/
-gulp.task('fonts', function() {
-  return gulp.src(paths.fonts.input)
-    .pipe(gulp.dest(paths.fonts.output));
+/* ------------------------- *
+ *          FILES
+ * ------------------------- */
+
+// Copy: Fonts
+// Copy fonts to dist folder for production
+gulp.task('copy:fonts', function() {
+  return gulp.src(paths.fonts.src)
+    .pipe(gulp.dest(paths.fonts.tmp))
+    .pipe(gulp.dest(paths.fonts.dist))
 });
 
-/*
-  IMAGES
-  Compress and copy to dist folder for production
-*/
-gulp.task('images', function() {
-  return gulp.src(paths.images.input)
+
+// Copy: Images
+// Compress and copy to dist folder for production
+gulp.task('copy:images', function() {
+  return gulp.src(paths.images.src)
     .pipe(imagemin())
-    .pipe(gulp.dest(paths.images.output));
+    .pipe(gulp.dest(paths.images.tmp))
+    .pipe(gulp.dest(paths.images.dist))
 });
 
-/*
-  LOCAL DEVELOPMENT
-  Run all tasks, start server and watch for file changes
-*/
-gulp.task('serve', ['css', 'js', 'haml', 'fonts', 'images'], function() {
-  browserSync.init({
-    server: paths.watch.server
-  });
-  gulp.watch(paths.css.input, ['css']);
-  gulp.watch(paths.haml.input, ['haml']);
-  gulp.watch(paths.js.input, ['js']);
-  gulp.watch(paths.css.input).on('change', browserSync.reload);
-  gulp.watch(paths.haml.input).on('change', browserSync.reload);
-  gulp.watch(paths.js.input).on('change', browserSync.reload);
+/* ------------------------- *
+ *       BUILD
+ * ------------------------- */
+
+// Build: Assets
+// Concat and minify styles and scripts
+gulp.task('build', ['compile:sass', 'compile:haml', 'compile:js', 'copy:fonts', 'copy:images'], function () {
+    return gulp.src(paths.useref.tmp)
+      .pipe(useref())
+      .pipe(gulpif('*.js', uglify()))
+      .pipe(gulpif('*.css', cleancss()))
+      .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
+      .pipe(gulp.dest(paths.useref.dist));
 });
 
-/*
-  GITHUB PAGES
-  Push dist folder to gh-pages branch for production
-*/
-gulp.task('deploy', function() {
-  return gulp.src('./dist/**/*')
-    .pipe(deploy());
-});
+/* ------------------------- *
+ *         CLEANUP
+ * ------------------------- */
 
-/*
-  EASY CLEANUP
-  Delete dist directory
-*/
-gulp.task('clean', function () {
-  return gulp.src(['dist'], {read: false})
+// Delete tmp folder for easy cleanup
+gulp.task('clean:tmp', function () {
+  return gulp.src(['tmp'], {read: false})
     .pipe(clean());
 });
+gulp.task('clean:dist', function () {
+ return gulp.src(['dist'], {read: false})
+   .pipe(clean());
+});
 
-/*
-  DEFAULT TASK RUNNER
-*/
+gulp.task('clean', ['clean:tmp', 'clean:dist']);
+
+/* ------------------------- *
+ *     LOCAL DEVELOPMENT
+ * ------------------------- */
+
+// Run all tasks, start server and watch for file changes
+gulp.task('serve', ['build'], function() {
+  browsersync.init({
+    server: paths.server
+  });
+  gulp.watch(paths.css.src, ['compile:sass']);
+  gulp.watch(paths.haml.src, ['compile:haml']);
+  gulp.watch(paths.js.src, ['compile:js']);
+  gulp.watch(paths.css.tmp).on('change', browsersync.reload);
+  gulp.watch(paths.html.tmp).on('change', browsersync.reload);
+  gulp.watch(paths.js.tmp).on('change', browsersync.reload);
+});
+
+// Default task runner
 gulp.task('default', ['serve']);
+
+
+/* ------------------------- *
+ *        DEPLOYMENT
+ * ------------------------- */
+
+// Push dist folder to gh-pages branch for production
+gulp.task('deploy', function() {
+  return gulp.src('dist/**/*')
+    .pipe(deploy());
+});

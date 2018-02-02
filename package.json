@@ -1,7 +1,7 @@
 {
   "name": "gulp-haml-boilerplate",
   "version": "1.0.0",
-  "description": "A simple Gulp workflow using Haml templating",
+  "description": "A simple front-end Gulp workflow for Haml, Sass, and ES6",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,16 +17,21 @@
   },
   "homepage": "https://github.com/melanieseltzer/gulp-haml-boilerplate#readme",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.20.0",
     "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.1",
     "gulp-clean": "^0.3.2",
     "gulp-clean-css": "^3.9.0",
-    "gulp-concat": "^2.6.1",
     "gulp-gh-pages": "^0.5.4",
     "gulp-haml": "^0.2.0",
     "gulp-html-beautify": "^1.0.1",
+    "gulp-htmlmin": "^4.0.0",
+    "gulp-if": "^2.0.2",
     "gulp-imagemin": "^4.0.0",
     "gulp-sass": "^3.1.0",
-    "gulp-uglify": "^3.0.0"
+    "gulp-uglify": "^3.0.0",
+    "gulp-useref": "^3.1.4"
   }
 }
