@@ -32,7 +32,7 @@ Build and serve locally
 gulp serve
 ```
 
-Build the `dist` folder for deployment
+Build the `dist` directory for deployment
 
 ```
 gulp build
