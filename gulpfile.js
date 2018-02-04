@@ -9,6 +9,7 @@ var haml = require('gulp-haml');
 var htmlbeautify = require('gulp-html-beautify');
 var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
+var injectpartials = require('gulp-inject-partials');
 var sass = require('gulp-sass');
 var uglify = require("gulp-uglify");
 var useref = require('gulp-useref');
@@ -19,36 +20,33 @@ var useref = require('gulp-useref');
 
 // Set your file paths here, modify depending on your workflow/naming
 var paths = {
-    server: 'tmp',
+    server: 'build',
     images: {
         src: 'src/img/**/*',
-        tmp: 'tmp/img',
+        build: 'build/img',
         dist: 'dist/img'
     },
     fonts: {
         src: 'src/fonts/**/*',
-        tmp: 'tmp/fonts',
+        build: 'build/fonts',
         dist: 'dist/fonts'
     },
     js: {
         src: 'src/js/**/*.js',
-        tmp: 'tmp/js',
+        build: 'build/js',
         dist: 'dist/js'
     },
     css: {
         src: 'src/sass/**/*.{css,scss,sass}',
-        tmp: 'tmp/css',
+        build: 'build/css',
         dist: 'dist/css'
     },
     haml: {
         src: 'src/haml/**/*.haml'
     },
     html: {
-        tmp: 'tmp',
-        dist: 'dist'
-    },
-    useref: {
-        tmp: 'tmp/**/*.html',
+        src: 'build/**/*.html',
+        build: 'build',
         dist: 'dist'
     }
 };
@@ -62,7 +60,7 @@ var paths = {
 gulp.task('compile:sass', function(){
   return gulp.src(paths.css.src)
     .pipe(sass())
-    .pipe(gulp.dest(paths.css.tmp))
+    .pipe(gulp.dest(paths.css.build))
     .pipe(browsersync.stream());
 });
 
@@ -72,9 +70,19 @@ gulp.task('compile:haml', function(){
   return gulp.src(paths.haml.src)
     .pipe(haml())
     .pipe(htmlbeautify({indent_size: 2}))
-    .pipe(gulp.dest(paths.html.tmp))
+    .pipe(gulp.dest(paths.html.build))
     .pipe(browsersync.stream());
 });
+
+// Inject: Partials
+// Inject all the partials, needs haml compiler to run first
+gulp.task('inject:partials', ['compile:haml'], function () {
+  return gulp.src(paths.html.src)
+    .pipe(injectpartials({removeTags: true}))
+    .pipe(gulp.dest('build'));
+});
+
+gulp.task('haml', ['inject:partials'])
 
 // Compile: Js
 // Compile from ES6 to vanilla JavaScript
@@ -83,7 +91,7 @@ gulp.task('compile:js', function() {
     .pipe(babel({
         presets: ['env']
     }))
-    .pipe(gulp.dest(paths.js.tmp))
+    .pipe(gulp.dest(paths.js.build))
     .pipe(browsersync.stream());
 });
 
@@ -95,7 +103,7 @@ gulp.task('compile:js', function() {
 // Copy fonts to dist folder for production
 gulp.task('copy:fonts', function() {
   return gulp.src(paths.fonts.src)
-    .pipe(gulp.dest(paths.fonts.tmp))
+    .pipe(gulp.dest(paths.fonts.build))
     .pipe(gulp.dest(paths.fonts.dist))
 });
 
@@ -105,7 +113,7 @@ gulp.task('copy:fonts', function() {
 gulp.task('copy:images', function() {
   return gulp.src(paths.images.src)
     .pipe(imagemin())
-    .pipe(gulp.dest(paths.images.tmp))
+    .pipe(gulp.dest(paths.images.build))
     .pipe(gulp.dest(paths.images.dist))
 });
 
@@ -115,50 +123,58 @@ gulp.task('copy:images', function() {
 
 // Build: Assets
 // Concat and minify styles and scripts
-gulp.task('build', ['compile:sass', 'compile:haml', 'compile:js', 'copy:fonts', 'copy:images'], function () {
-    return gulp.src(paths.useref.tmp)
-      .pipe(useref())
+gulp.task('build', ['compile:sass', 'haml', 'compile:js', 'copy:fonts', 'copy:images'], function () {
+    return gulp.src(paths.html.src)
+      .pipe(useref({searchPath: 'build'}))
       .pipe(gulpif('*.js', uglify()))
       .pipe(gulpif('*.css', cleancss()))
       .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
-      .pipe(gulp.dest(paths.useref.dist));
+      .pipe(gulp.dest(paths.html.dist));
 });
 
 /* ------------------------- *
  *         CLEANUP
  * ------------------------- */
 
-// Delete tmp folder for easy cleanup
-gulp.task('clean:tmp', function () {
-  return gulp.src(['tmp'], {read: false})
+// We don't want partials to render in the dist folder, so delete them
+gulp.task('clean:partials', ['build'], function () {
+  return gulp.src(['dist/partials'], {read: false})
     .pipe(clean());
 });
+
+// Delete build folder for easy cleanup
+gulp.task('clean:build', function () {
+  return gulp.src(['build'], {read: false})
+    .pipe(clean());
+});
+
+// Delete dist folder for easy cleanup
 gulp.task('clean:dist', function () {
  return gulp.src(['dist'], {read: false})
    .pipe(clean());
 });
 
-gulp.task('clean', ['clean:tmp', 'clean:dist']);
+gulp.task('clean', ['clean:build', 'clean:dist']);
 
 /* ------------------------- *
  *     LOCAL DEVELOPMENT
  * ------------------------- */
 
 // Run all tasks, start server and watch for file changes
-gulp.task('serve', ['build'], function() {
+gulp.task('serve', ['build', 'clean:partials'], function() {
   browsersync.init({
     server: paths.server
   });
   gulp.watch(paths.css.src, ['compile:sass']);
-  gulp.watch(paths.haml.src, ['compile:haml']);
+  gulp.watch(paths.haml.src, ['haml']);
   gulp.watch(paths.js.src, ['compile:js']);
-  gulp.watch(paths.css.tmp).on('change', browsersync.reload);
-  gulp.watch(paths.html.tmp).on('change', browsersync.reload);
-  gulp.watch(paths.js.tmp).on('change', browsersync.reload);
+  gulp.watch(paths.css.build).on('change', browsersync.reload);
+  gulp.watch(paths.html.build).on('change', browsersync.reload);
+  gulp.watch(paths.js.build).on('change', browsersync.reload);
 });
 
 // Default task runner
-gulp.task('default', ['serve']);
+gulp.task('default', ['serve', 'clean:partials']);
 
 
 /* ------------------------- *

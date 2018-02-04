@@ -1,7 +1,7 @@
-# Gulp HAML Boilerplate
-A simple front-end Gulp workflow to get you up and coding quickly and painlessly!
+# Gulp Haml Boilerplate
+My personal front-end Gulp workflow for Haml and Sass. A simple boilerplate to get you up and running quickly. Uses BrowserSync for live-reloading in the browser. Less refreshing, more coding! :fire:
 
-## Start
+## Thanks :+1:
 
 This boilerplate uses:
 
@@ -10,6 +10,9 @@ This boilerplate uses:
 - [Sass](http://sass-lang.com/)
 - [Haml](http://haml.info/)
 - [Babel](https://babeljs.io/)
+- [BrowserSync](https://browsersync.io/)
+
+## Start
 
 Clone repo and cd into project directory:
 
@@ -26,7 +29,7 @@ npm install
 
 ## Task runners
 
-Build and serve locally
+Run everything and serve locally from `build`. BrowserSync watches for changes in `src` and automatically reloads the browser.
 
 ```
 gulp serve
@@ -44,17 +47,17 @@ Deploy `dist` directory to GitHub Pages (gh-pages branch)
 gulp deploy
 ```
 
-Delete `tmp` and `dist` folders for easy cleanup
+Delete `build` and `dist` folders for easy cleanup
 
 ```
 gulp clean (both)
-gulp clean:tmp
+gulp clean:build
 gulp clean:dist
 ```
 
 ## Folder Structure
 
-Develop your site in the `src` directory. Run `gulp` and your files are compiled to `tmp` and then minified to `dist` for production.
+Develop your site in the `src` directory. Run `gulp build` and your files are compiled to `build` and then minified to `dist` for production.
 
 ```
 gulp-haml-boilerplate/
@@ -67,13 +70,17 @@ gulp-haml-boilerplate/
 |   |   |—— # optimized images
 |   |—— js/
 |   |   |—— all.min.js (packaged and minified)
-|   |—— somedirectory/
+|   |—— test-directory/
 |   |   |—— index.html
 |   |—— index.html
 |—— src/
 |   |—— fonts/
 |   |   |—— # font files
 |   |—— haml/
+|   |   |—— partials/
+|   |   |   |—— _footer.haml
+|   |   |   |—— _head.haml
+|   |   |   |—— _header.haml
 |   |   |—— test-directory/
 |   |   |   |—— index.haml
 |   |   |—— index.haml
@@ -87,7 +94,7 @@ gulp-haml-boilerplate/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
 |   |   |—— all.scss (your custom sass)
-|—— tmp/
+|—— build/
 |   |—— css/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
@@ -100,7 +107,11 @@ gulp-haml-boilerplate/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
 |   |   |—— app.js
-|   |—— somedirectory/
+|   |—— partials/
+|   |   |—— _footer.html
+|   |   |—— _head.html
+|   |   |—— _header.html
+|   |—— test-directory/
 |   |   |—— index.html
 |   |—— index.html
 |—— .gitignore
@@ -115,34 +126,33 @@ Set your paths. You can modify depending on your workflow/naming conventions.
 
 ```
 var paths = {
-    server: 'tmp',
+    server: 'build',
     images: {
         src: 'src/img/**/*',
+        build: 'build/img',
         dist: 'dist/img'
     },
     fonts: {
         src: 'src/fonts/**/*',
+        build: 'build/fonts',
         dist: 'dist/fonts'
     },
     js: {
         src: 'src/js/**/*.js',
-        tmp: 'tmp/js',
+        build: 'build/js',
         dist: 'dist/js'
     },
     css: {
         src: 'src/sass/**/*.{css,scss,sass}',
-        tmp: 'tmp/css',
+        build: 'build/css',
         dist: 'dist/css'
     },
     haml: {
         src: 'src/haml/**/*.haml'
     },
     html: {
-        tmp: 'tmp',
-        dist: 'dist'
-    },
-    useref: {
-        tmp: 'tmp/**/*.html',
+        src: 'build/**/*.html',
+        build: 'build',
         dist: 'dist'
     }
 };
