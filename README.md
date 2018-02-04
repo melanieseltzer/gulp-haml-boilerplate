@@ -61,6 +61,26 @@ Develop your site in the `src` directory. Run `gulp build` and your files are co
 
 ```
 gulp-haml-boilerplate/
+|—— build/
+|   |—— css/
+|   |   |—— vendor/
+|   |   |   |—— # your vendor files
+|   |   |—— styles.css
+|   |—— fonts/
+|   |   |—— # font files
+|   |—— img/
+|   |   |—— # optimized images
+|   |—— js/
+|   |   |—— vendor/
+|   |   |   |—— # your vendor files
+|   |   |—— app.js
+|   |—— partials/
+|   |   |—— _footer.html
+|   |   |—— _head.html
+|   |   |—— _header.html
+|   |—— test-directory/
+|   |   |—— index.html
+|   |—— index.html
 |—— dist/
 |   |—— css/
 |   |   |—— all.min.css (packaged and minified)
@@ -94,26 +114,6 @@ gulp-haml-boilerplate/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
 |   |   |—— all.scss (your custom sass)
-|—— build/
-|   |—— css/
-|   |   |—— vendor/
-|   |   |   |—— # your vendor files
-|   |   |—— styles.css
-|   |—— fonts/
-|   |   |—— # font files
-|   |—— img/
-|   |   |—— # optimized images
-|   |—— js/
-|   |   |—— vendor/
-|   |   |   |—— # your vendor files
-|   |   |—— app.js
-|   |—— partials/
-|   |   |—— _footer.html
-|   |   |—— _head.html
-|   |   |—— _header.html
-|   |—— test-directory/
-|   |   |—— index.html
-|   |—— index.html
 |—— .gitignore
 |—— gulfile.js
 |—— package.json
