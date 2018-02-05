@@ -1,8 +1,8 @@
 var gulp = require('gulp');
 var babel = require('gulp-babel');
 var browsersync = require('browser-sync').create();
-var clean = require('gulp-clean');
 var cleancss = require('gulp-clean-css');
+var del = require('del');
 var deploy = require('gulp-gh-pages');
 var gulpif = require('gulp-if');
 var haml = require('gulp-haml');
@@ -158,8 +158,9 @@ gulp.task('build:files', ['compile:sass', 'haml', 'compile:js', 'copy:assets', '
 
 // We don't want partials to render in the dist folder, so delete them
 gulp.task('clean:partials', ['build:files'], function () {
- return gulp.src(['dist/partials'], {read: false})
-   .pipe(clean());
+  return del([
+    'dist/partials'
+  ]);
 });
 
 // Replace Base path
@@ -193,13 +194,15 @@ gulp.task('deploy', ['build'], function() {
  * ------------------------- */
 
 gulp.task('clean:build', function () {
-  return gulp.src(['build'], {read: false})
-    .pipe(clean());
+  return del([
+    'build'
+  ]);
 });
 
 gulp.task('clean:dist', function () {
- return gulp.src(['dist'], {read: false})
-   .pipe(clean());
+  return del([
+    'dist'
+  ]);
 });
 
 // Delete build and dist folder for easy cleanup
