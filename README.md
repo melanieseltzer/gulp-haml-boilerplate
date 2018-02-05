@@ -62,14 +62,15 @@ Develop your site in the `src` directory. You can choose to commit `build` or `d
 ```
 gulp-haml-boilerplate/
 |—— build/
+|   |—— assets/
+|   |   |—— fonts/
+|   |   |   |—— # font files
+|   |   |—— img/
+|   |   |   |—— # unoptimized images
 |   |—— css/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
 |   |   |—— styles.css
-|   |—— fonts/
-|   |   |—— # font files
-|   |—— img/
-|   |   |—— # optimized images
 |   |—— js/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
