@@ -116,8 +116,8 @@ gulp.task('copy:assets', function() {
 // Compress: Assets
 // Copy and compress assets for production
 gulp.task('compress:assets', function() {
- return gulp.src(paths.assets.src)
-    .pipe(imagemin())
+  gulp.src(paths.assets.src)
+    .pipe(imagemin({verbose: true}))
     .pipe(gulp.dest(paths.assets.dist))
 });
 
