@@ -10,9 +10,21 @@ var htmlbeautify = require('gulp-html-beautify');
 var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
 var injectpartials = require('gulp-inject-partials');
+var replace = require('gulp-replace');
 var sass = require('gulp-sass');
 var uglify = require("gulp-uglify");
 var useref = require('gulp-useref');
+
+/* ------------------------- *
+ *        BASE PATHS
+ * ------------------------- */
+
+// If you plan to publish to Github pages, you will need to do a base path config
+var base = {
+  // Your Github pages base URL
+  // Same name as your repo
+  url: '/gulp-haml-boilerplate/'
+}
 
 /* ------------------------- *
  *          PATHS
@@ -21,15 +33,10 @@ var useref = require('gulp-useref');
 // Set your file paths here, modify depending on your workflow/naming
 var paths = {
     server: 'build',
-    images: {
-        src: 'src/img/**/*',
-        build: 'build/img',
-        dist: 'dist/img'
-    },
-    fonts: {
-        src: 'src/fonts/**/*',
-        build: 'build/fonts',
-        dist: 'dist/fonts'
+    assets: {
+        src: 'src/assets/**/*',
+        build: 'build/assets',
+        dist: 'dist/assets'
     },
     js: {
         src: 'src/js/**/*.js',
@@ -75,11 +82,11 @@ gulp.task('compile:haml', function(){
 });
 
 // Inject: Partials
-// Inject all the partials, needs haml compiler to run first
+// Inject all the html partials
 gulp.task('inject:partials', ['compile:haml'], function () {
   return gulp.src(paths.html.src)
     .pipe(injectpartials({removeTags: true}))
-    .pipe(gulp.dest('build'));
+    .pipe(gulp.dest(paths.html.build));
 });
 
 gulp.task('haml', ['inject:partials'])
@@ -96,34 +103,51 @@ gulp.task('compile:js', function() {
 });
 
 /* ------------------------- *
- *          FILES
+ *        ASSET FILES
  * ------------------------- */
 
-// Copy: Fonts
-// Copy fonts to dist folder for production
-gulp.task('copy:fonts', function() {
-  return gulp.src(paths.fonts.src)
-    .pipe(gulp.dest(paths.fonts.build))
-    .pipe(gulp.dest(paths.fonts.dist))
+// Copy: Assets
+// Copy over assets for local server
+gulp.task('copy:assets', function() {
+ return gulp.src(paths.assets.src)
+    .pipe(gulp.dest(paths.assets.build))
 });
 
-
-// Copy: Images
-// Compress and copy to dist folder for production
-gulp.task('copy:images', function() {
-  return gulp.src(paths.images.src)
+// Compress: Assets
+// Copy and compress assets for production
+gulp.task('compress:assets', function() {
+ return gulp.src(paths.assets.src)
     .pipe(imagemin())
-    .pipe(gulp.dest(paths.images.build))
-    .pipe(gulp.dest(paths.images.dist))
+    .pipe(gulp.dest(paths.assets.dist))
 });
 
 /* ------------------------- *
- *          BUILD
+ *     LOCAL DEVELOPMENT
  * ------------------------- */
 
-// Build: Assets
+// Start server and watch for changes
+gulp.task('serve', ['compile:sass', 'haml', 'compile:js', 'copy:assets'], function() {
+  browsersync.init({
+    server: paths.server
+  });
+  gulp.watch(paths.css.src, ['compile:sass']);
+  gulp.watch(paths.haml.src, ['haml']);
+  gulp.watch(paths.js.src, ['compile:js']);
+  gulp.watch(paths.css.src).on('change', browsersync.reload);
+  gulp.watch(paths.html.src).on('change', browsersync.reload);
+  gulp.watch(paths.js.src).on('change', browsersync.reload);
+});
+
+// Default task runner
+gulp.task('default', ['serve']);
+
+/* ------------------------- *
+ *     PRODUCTION BUILD
+ * ------------------------- */
+
+// Build files for production
 // Concat and minify styles and scripts
-gulp.task('build', ['compile:sass', 'haml', 'compile:js', 'copy:fonts', 'copy:images'], function () {
+gulp.task('build:files', ['compile:sass', 'haml', 'compile:js', 'copy:assets', 'compress:assets'], function () {
     return gulp.src(paths.html.src)
       .pipe(useref({searchPath: 'build'}))
       .pipe(gulpif('*.js', uglify()))
@@ -132,57 +156,51 @@ gulp.task('build', ['compile:sass', 'haml', 'compile:js', 'copy:fonts', 'copy:im
       .pipe(gulp.dest(paths.html.dist));
 });
 
-/* ------------------------- *
- *         CLEANUP
- * ------------------------- */
-
 // We don't want partials to render in the dist folder, so delete them
-gulp.task('clean:partials', ['build'], function () {
-  return gulp.src(['dist/partials'], {read: false})
-    .pipe(clean());
-});
-
-// Delete build folder for easy cleanup
-gulp.task('clean:build', function () {
-  return gulp.src(['build'], {read: false})
-    .pipe(clean());
-});
-
-// Delete dist folder for easy cleanup
-gulp.task('clean:dist', function () {
- return gulp.src(['dist'], {read: false})
+gulp.task('clean:partials', ['build:files'], function () {
+ return gulp.src(['dist/partials'], {read: false})
    .pipe(clean());
 });
 
-gulp.task('clean', ['clean:build', 'clean:dist']);
-
-/* ------------------------- *
- *     LOCAL DEVELOPMENT
- * ------------------------- */
-
-// Run all tasks, start server and watch for file changes
-gulp.task('serve', ['build', 'clean:partials'], function() {
-  browsersync.init({
-    server: paths.server
-  });
-  gulp.watch(paths.css.src, ['compile:sass']);
-  gulp.watch(paths.haml.src, ['haml']);
-  gulp.watch(paths.js.src, ['compile:js']);
-  gulp.watch(paths.css.build).on('change', browsersync.reload);
-  gulp.watch(paths.html.build).on('change', browsersync.reload);
-  gulp.watch(paths.js.build).on('change', browsersync.reload);
+// Replace Base path
+// For Github pages we have to replace the base path
+// Remove this if not using Github pages
+gulp.task('replace:basepath', ['clean:partials'], function () {
+ return gulp.src('dist/**/*')
+  // For relative links and stylesheet refs
+  .pipe(replace('href="/', 'href="' + base.url))
+  // For any src references e.g <img>, <script>
+  .pipe(replace('src="/', 'src="' + base.url))
+  // For font-face references
+  .pipe(replace('url(/', 'url(' + base.url))
+  .pipe(gulp.dest('dist'));
 });
 
-// Default task runner
-gulp.task('default', ['serve', 'clean:partials']);
-
+gulp.task('build', ['replace:basepath']);
 
 /* ------------------------- *
  *        DEPLOYMENT
  * ------------------------- */
 
 // Push dist folder to gh-pages branch for production
-gulp.task('deploy', function() {
+gulp.task('deploy', ['build'], function() {
   return gulp.src('dist/**/*')
     .pipe(deploy());
 });
+
+/* ------------------------- *
+ *         CLEANUP
+ * ------------------------- */
+
+gulp.task('clean:build', function () {
+  return gulp.src(['build'], {read: false})
+    .pipe(clean());
+});
+
+gulp.task('clean:dist', function () {
+ return gulp.src(['dist'], {read: false})
+   .pipe(clean());
+});
+
+// Delete build and dist folder for easy cleanup
+gulp.task('clean', ['clean:build', 'clean:dist']);

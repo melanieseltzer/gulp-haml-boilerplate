@@ -6,7 +6,7 @@ My personal front-end Gulp workflow for Haml and Sass. A simple boilerplate to g
 This boilerplate uses:
 
 - [Node.js](https://nodejs.org/en/)
-- [Gulp](https://gulpjs.com/)
+- [Gulp 3](https://gulpjs.com/)
 - [Sass](http://sass-lang.com/)
 - [Haml](http://haml.info/)
 - [Babel](https://babeljs.io/)
@@ -29,7 +29,7 @@ npm install
 
 ## Task runners
 
-Run everything and serve locally from `build`. BrowserSync watches for changes in `src` and automatically reloads the browser.
+Serve locally from `build`. BrowserSync watches for changes in `src` and automatically reloads the browser.
 
 ```
 gulp serve
@@ -57,25 +57,29 @@ gulp clean:dist
 
 ## Folder Structure
 
-Develop your site in the `src` directory. Run `gulp build` and your files are compiled to `build` and then minified to `dist` for production.
+Develop your site in the `src` directory. You can choose to commit `build` or `dist` folders by removing them from .gitignore (up to you).
 
 ```
 gulp-haml-boilerplate/
 |—— dist/
+|   |—— assets/
+|   |   |—— fonts/
+|   |   |   |—— # font files
+|   |   |—— img/
+|   |   |   |—— # optimized images
 |   |—— css/
 |   |   |—— all.min.css (packaged and minified)
-|   |—— fonts/
-|   |   |—— # font files
-|   |—— img/
-|   |   |—— # optimized images
 |   |—— js/
 |   |   |—— all.min.js (packaged and minified)
 |   |—— test-directory/
 |   |   |—— index.html
 |   |—— index.html
 |—— src/
-|   |—— fonts/
-|   |   |—— # font files
+|   |—— assets/
+|   |   |—— fonts/
+|   |   |   |—— # font files
+|   |   |—— img/
+|   |   |   |—— # unoptimized images
 |   |—— haml/
 |   |   |—— partials/
 |   |   |   |—— _footer.haml
@@ -84,8 +88,6 @@ gulp-haml-boilerplate/
 |   |   |—— test-directory/
 |   |   |   |—— index.haml
 |   |   |—— index.haml
-|   |—— img/
-|   |   |—— # un-optimized images
 |   |—— js/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
@@ -95,14 +97,15 @@ gulp-haml-boilerplate/
 |   |   |   |—— # your vendor files
 |   |   |—— all.scss (your custom sass)
 |—— build/
+|   |—— assets/
+|   |   |—— fonts/
+|   |   |   |—— # font files
+|   |   |—— img/
+|   |   |   |—— # unoptimized images
 |   |—— css/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
 |   |   |—— styles.css
-|   |—— fonts/
-|   |   |—— # font files
-|   |—— img/
-|   |   |—— # optimized images
 |   |—— js/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
@@ -122,20 +125,23 @@ gulp-haml-boilerplate/
 
 ## Configurable Options
 
+If you plan to publish to Github pages, you will need to do a base path alteration because it sets the repo name as root (e.g. https://username.github.io/reponame/). Add your repo name to this variable in the gulpfile (keep the two slashes intact).
+
+```
+var base = {
+  url: '/REPONAMEHERE/'
+}
+```
+
 Set your paths. You can modify depending on your workflow/naming conventions.
 
 ```
 var paths = {
     server: 'build',
-    images: {
-        src: 'src/img/**/*',
-        build: 'build/img',
-        dist: 'dist/img'
-    },
-    fonts: {
-        src: 'src/fonts/**/*',
-        build: 'build/fonts',
-        dist: 'dist/fonts'
+    assets: {
+        src: 'src/assets/**/*',
+        build: 'build/assets',
+        dist: 'dist/assets'
     },
     js: {
         src: 'src/js/**/*.js',

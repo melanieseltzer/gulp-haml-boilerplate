@@ -1,4 +1,14 @@
-// Hello World!
+@font-face {
+  font-family: "proxima-nova";
+  src: url("/assets/fonts/proximanova-regular-webfont.eot");
+  src: url("/assets/fonts/proximanova-regular-webfont.eot?#iefix") format("embedded-opentype"), url("/assets/fonts/proximanova-regular-webfont.woff2") format("woff2"), url("/assets/fonts/proximanova-regular-webfont.woff") format("woff"), url("/assets/fonts/proximanova-regular-webfont.ttf") format("truetype"), url("/assets/fonts/proximanova-regular-webfont.svg#proxima_novaregular") format("svg");
+  font-weight: 400;
+  font-style: normal;
+}
 body {
   background: salmon;
+}
+h1 {
+  font-family: "proxima-nova";
+  font-style: normal;
 }
