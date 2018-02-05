@@ -164,6 +164,12 @@ var paths = {
 };
 ```
 
+## Bugs/To Do
+
+:negative_squared_cross_mark: gulp-imagemin fails to optimize jpg, corrupts on output ([#278](https://github.com/imagemin/imagemin/issues/278))
+
+:negative_squared_cross_mark: gulp-github-pages deploy fails due to dependency on gulp-util (Waiting for [#117](https://github.com/shinnn/gulp-gh-pages/pull/117))
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
