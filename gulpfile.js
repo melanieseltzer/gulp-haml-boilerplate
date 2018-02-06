@@ -167,7 +167,7 @@ gulp.task('clean:partials', ['build:files'], function () {
 // For Github pages we have to replace the base path
 // Remove this if not using Github pages
 gulp.task('replace:basepath', ['clean:partials'], function () {
- return gulp.src('dist/**/*')
+ return gulp.src('dist/**/*.{html,css}')
   // For relative links and stylesheet refs
   .pipe(replace('href="/', 'href="' + base.url))
   // For any src references e.g <img>, <script>
