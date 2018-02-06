@@ -29,27 +29,38 @@ Install dependencies:
 npm install
 ```
 
+Set your base path in the Gulpfile, if deploying to Github Pages:
+
+```
+var base = {
+  // Your Github pages base URL
+  // Same name as your repo
+  url: '/gulp-haml-boilerplate/'
+}
+
+```
+
 ## Task runners
 
-Serve locally from `build`. BrowserSync watches for changes in `src` and automatically reloads the browser.
+Serve locally from `build`. BrowserSync watches for changes in `src` and automatically reloads the browser:
 
 ```
 gulp serve
 ```
 
-Build the `dist` directory for deployment
+Build the `dist` directory for deployment:
 
 ```
 gulp build
 ```
 
-Deploy `dist` directory to GitHub Pages (gh-pages branch)
+Deploy `dist` directory to GitHub Pages (gh-pages branch):
 
 ```
 gulp deploy
 ```
 
-Delete `build` and `dist` folders for easy cleanup
+Delete `build` and `dist` folders for easy cleanup:
 
 ```
 gulp clean (both)
@@ -127,7 +138,9 @@ gulp-haml-boilerplate/
 
 ## Configurable Options
 
-If you plan to publish to Github pages, you will need to do a base path alteration because it sets the repo name as root (e.g. https://username.github.io/reponame/). Add your repo name to this variable in the gulpfile (keep the two slashes intact).
+If you plan to publish to Github pages, you will need to do a base path declaration. This is because Github Pages serves files from a folder named after your repo (e.g. https://username.github.io/reponame/) instead of root (https://username.github.io).
+
+Add your repo name to this variable in the gulpfile (keep the two slashes intact).
 
 ```
 var base = {
