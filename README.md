@@ -75,45 +75,46 @@ Develop your site in the `src` directory. You can choose to commit `build` or `d
 ```
 gulp-haml-boilerplate/
 |—— build/
-|   |—— assets/
-|   |   |—— fonts/
-|   |   |   |—— # font files
-|   |   |—— img/
-|   |   |   |—— # unoptimized images
 |   |—— css/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
 |   |   |—— styles.css
+|   |—— img/
+|   |   |—— # unoptimized images
 |   |—— js/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
 |   |   |—— app.js
+|   |—— lib/
+|   |   |—— # dependencies from package.json
 |   |—— partials/
 |   |   |—— _footer.html
 |   |   |—— _head.html
 |   |   |—— _header.html
+|   |—— static/
+|   |   |—— fonts/
+|   |   |   |—— # font files
+|   |   |—— pdfs/
+|   |   |—— etc...
 |   |—— test-directory/
 |   |   |—— index.html
 |   |—— index.html
 |—— dist/
-|   |—— assets/
-|   |   |—— fonts/
-|   |   |   |—— # font files
-|   |   |—— img/
-|   |   |   |—— # optimized images
 |   |—— css/
 |   |   |—— all.min.css (packaged and minified)
+|   |—— img/
+|   |   |—— # optimized images
 |   |—— js/
 |   |   |—— all.min.js (packaged and minified)
+|   |—— static/
+|   |   |—— fonts/
+|   |   |   |—— # font files
+|   |   |—— pdfs/
+|   |   |—— etc...
 |   |—— test-directory/
 |   |   |—— index.html
 |   |—— index.html
 |—— src/
-|   |—— assets/
-|   |   |—— fonts/
-|   |   |   |—— # font files
-|   |   |—— img/
-|   |   |   |—— # unoptimized images
 |   |—— haml/
 |   |   |—— partials/
 |   |   |   |—— _footer.haml
@@ -122,14 +123,21 @@ gulp-haml-boilerplate/
 |   |   |—— test-directory/
 |   |   |   |—— index.haml
 |   |   |—— index.haml
+|   |—— img/
+|   |   |—— # unoptimized images
 |   |—— js/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
-|   |   |—— all.js (your custom js)
+|   |   |—— app.js (your custom js)
 |   |—— sass/
 |   |   |—— vendor/
 |   |   |   |—— # your vendor files
-|   |   |—— all.scss (your custom sass)
+|   |   |—— styles.scss (your custom sass)
+|   |—— static/
+|   |   |—— fonts/
+|   |   |   |—— # font files
+|   |   |—— pdfs/
+|   |   |—— etc...
 |—— .gitignore
 |—— gulfile.js
 |—— package.json
@@ -153,10 +161,15 @@ Set your paths. You can modify depending on your workflow/naming conventions.
 ```
 var paths = {
     server: 'build',
-    assets: {
-        src: 'src/assets/**/*',
-        build: 'build/assets',
-        dist: 'dist/assets'
+    img: {
+        src: 'src/img/**/*',
+        build: 'build/img',
+        dist: 'dist/img'
+    },
+    static: {
+        src: 'src/static/**/*',
+        build: 'build/static',
+        dist: 'dist/static'
     },
     js: {
         src: 'src/js/**/*.js',
