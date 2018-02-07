@@ -10,6 +10,7 @@ var htmlbeautify = require('gulp-html-beautify');
 var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
 var injectpartials = require('gulp-inject-partials');
+var npmdist = require('gulp-npm-dist');
 var replace = require('gulp-replace');
 var sass = require('gulp-sass');
 var uglify = require("gulp-uglify");
@@ -33,10 +34,15 @@ var base = {
 // Set your file paths here, modify depending on your workflow/naming
 var paths = {
     server: 'build',
-    assets: {
-        src: 'src/assets/**/*',
-        build: 'build/assets',
-        dist: 'dist/assets'
+    img: {
+        src: 'src/img/**/*',
+        build: 'build/img',
+        dist: 'dist/img'
+    },
+    static: {
+        src: 'src/static/**/*',
+        build: 'build/static',
+        dist: 'dist/static'
     },
     js: {
         src: 'src/js/**/*.js',
@@ -103,22 +109,33 @@ gulp.task('compile:js', function() {
 });
 
 /* ------------------------- *
- *        ASSET FILES
+ *          FILES
  * ------------------------- */
 
-// Copy: Assets
-// Copy over assets for local server
-gulp.task('copy:assets', function() {
- return gulp.src(paths.assets.src)
-    .pipe(gulp.dest(paths.assets.build))
+// Copy: Images
+gulp.task('copy:images', function() {
+ return gulp.src(paths.img.src)
+    .pipe(gulp.dest(paths.img.build))
 });
 
-// Compress: Assets
-// Copy and compress assets for production
-gulp.task('compress:assets', function() {
-  gulp.src(paths.assets.src)
+// Copy: Static files
+gulp.task('copy:static', function() {
+ return gulp.src(paths.static.src)
+    .pipe(gulp.dest(paths.static.build))
+    .pipe(gulp.dest(paths.static.dist))
+});
+
+// Copy: Dependencies
+gulp.task('copy:libs', function() {
+  gulp.src(npmdist({ copyUnminified: true}), {base:'./node_modules'})
+    .pipe(gulp.dest('build/lib'));
+});
+
+// Compress: Images
+gulp.task('compress:images', function() {
+  gulp.src(paths.img.src)
     .pipe(imagemin({verbose: true}))
-    .pipe(gulp.dest(paths.assets.dist))
+    .pipe(gulp.dest(paths.img.dist))
 });
 
 /* ------------------------- *
@@ -126,7 +143,7 @@ gulp.task('compress:assets', function() {
  * ------------------------- */
 
 // Start server and watch for changes
-gulp.task('serve', ['compile:sass', 'haml', 'compile:js', 'copy:assets'], function() {
+gulp.task('serve', ['compile:sass', 'haml', 'compile:js', 'copy:images', 'copy:static', 'copy:libs'], function() {
   browsersync.init({
     server: paths.server
   });
@@ -147,7 +164,7 @@ gulp.task('default', ['serve']);
 
 // Build files for production
 // Concat and minify styles and scripts
-gulp.task('build:files', ['compile:sass', 'haml', 'compile:js', 'copy:assets', 'compress:assets'], function () {
+gulp.task('build:files', ['compile:sass', 'haml', 'compile:js', 'copy:images', 'copy:static', 'compress:images', 'copy:libs'], function () {
     return gulp.src(paths.html.src)
       .pipe(useref({searchPath: 'build'}))
       .pipe(gulpif('*.js', uglify()))
