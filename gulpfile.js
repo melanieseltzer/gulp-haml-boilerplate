@@ -91,11 +91,11 @@ gulp.task('compile:haml', function(){
 // Inject all the html partials
 gulp.task('inject:partials', ['compile:haml'], function () {
   return gulp.src(paths.html.src)
-    .pipe(injectpartials({removeTags: true}))
+    .pipe(injectpartials())
     .pipe(gulp.dest(paths.html.build));
 });
 
-gulp.task('haml', ['inject:partials'])
+gulp.task('haml', ['inject:partials']);
 
 // Compile: Js
 // Compile from ES6 to vanilla JavaScript
@@ -115,14 +115,19 @@ gulp.task('compile:js', function() {
 // Copy: Images
 gulp.task('copy:images', function() {
  return gulp.src(paths.img.src)
-    .pipe(gulp.dest(paths.img.build))
+    .pipe(gulp.dest(paths.img.build));
 });
 
 // Copy: Static files
-gulp.task('copy:static', function() {
+gulp.task('copy:staticbuild', function() {
  return gulp.src(paths.static.src)
-    .pipe(gulp.dest(paths.static.build))
-    .pipe(gulp.dest(paths.static.dist))
+    .pipe(gulp.dest(paths.static.build));
+});
+
+// Copy: Static files
+gulp.task('copy:staticdist', function() {
+ return gulp.src(paths.static.src)
+    .pipe(gulp.dest(paths.static.dist));
 });
 
 // Copy: Dependencies
@@ -143,7 +148,7 @@ gulp.task('compress:images', function() {
  * ------------------------- */
 
 // Start server and watch for changes
-gulp.task('serve', ['compile:sass', 'haml', 'compile:js', 'copy:images', 'copy:static', 'copy:libs'], function() {
+gulp.task('serve', ['compile:sass', 'compile:js', 'haml', 'copy:images', 'copy:staticbuild', 'copy:libs'], function() {
   browsersync.init({
     server: paths.server
   });
@@ -155,16 +160,13 @@ gulp.task('serve', ['compile:sass', 'haml', 'compile:js', 'copy:images', 'copy:s
   gulp.watch(paths.js.src).on('change', browsersync.reload);
 });
 
-// Default task runner
-gulp.task('default', ['serve']);
-
 /* ------------------------- *
  *     PRODUCTION BUILD
  * ------------------------- */
 
 // Build files for production
 // Concat and minify styles and scripts
-gulp.task('build:files', ['compile:sass', 'haml', 'compile:js', 'copy:images', 'copy:static', 'compress:images', 'copy:libs'], function () {
+gulp.task('build:files', ['compile:sass', 'compile:js', 'haml', 'copy:images', 'copy:staticbuild', 'copy:staticdist', 'compress:images', 'copy:libs'], function () {
     return gulp.src(paths.html.src)
       .pipe(useref({searchPath: 'build'}))
       .pipe(gulpif('*.js', uglify()))
@@ -224,3 +226,10 @@ gulp.task('clean:dist', function () {
 
 // Delete build and dist folder for easy cleanup
 gulp.task('clean', ['clean:build', 'clean:dist']);
+
+/* ------------------------- *
+ *         DEFAULT
+ * ------------------------- */
+
+// Default task runner
+gulp.task('default', ['serve']);
