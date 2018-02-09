@@ -1,19 +1,23 @@
 var gulp = require('gulp');
+var autoprefixer = require('autoprefixer');
 var babel = require('gulp-babel');
 var browsersync = require('browser-sync').create();
 var cleancss = require('gulp-clean-css');
 var del = require('del');
 var deploy = require('gulp-gh-pages');
+var fileinclude = require('gulp-file-include');
 var gulpif = require('gulp-if');
 var haml = require('gulp-haml');
 var htmlbeautify = require('gulp-html-beautify');
 var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
-var injectpartials = require('gulp-inject-partials');
+var log = require('fancy-log');
 var npmdist = require('gulp-npm-dist');
+var postcss = require('gulp-postcss');
 var replace = require('gulp-replace');
 var sass = require('gulp-sass');
-var uglify = require("gulp-uglify");
+var sourcemaps = require('gulp-sourcemaps');
+let uglify = require('gulp-uglify-es').default;
 var useref = require('gulp-useref');
 
 /* ------------------------- *
@@ -65,50 +69,6 @@ var paths = {
 };
 
 /* ------------------------- *
- *       PREPROCESSING
- * ------------------------- */
-
-// Compile: Sass
-// Compile from Sass to vanilla CSS
-gulp.task('compile:sass', function(){
-  return gulp.src(paths.css.src)
-    .pipe(sass())
-    .pipe(gulp.dest(paths.css.build))
-    .pipe(browsersync.stream());
-});
-
-// Compile: Haml
-// Compile from Haml to vanilla HTML
-gulp.task('compile:haml', function(){
-  return gulp.src(paths.haml.src)
-    .pipe(haml())
-    .pipe(htmlbeautify({indent_size: 2}))
-    .pipe(gulp.dest(paths.html.build))
-    .pipe(browsersync.stream());
-});
-
-// Inject: Partials
-// Inject all the html partials
-gulp.task('inject:partials', ['compile:haml'], function () {
-  return gulp.src(paths.html.src)
-    .pipe(injectpartials())
-    .pipe(gulp.dest(paths.html.build));
-});
-
-gulp.task('haml', ['inject:partials']);
-
-// Compile: Js
-// Compile from ES6 to vanilla JavaScript
-gulp.task('compile:js', function() {
-  return gulp.src(paths.js.src)
-    .pipe(babel({
-        presets: ['env']
-    }))
-    .pipe(gulp.dest(paths.js.build))
-    .pipe(browsersync.stream());
-});
-
-/* ------------------------- *
  *          FILES
  * ------------------------- */
 
@@ -132,7 +92,7 @@ gulp.task('copy:staticdist', function() {
 
 // Copy: Dependencies
 gulp.task('copy:libs', function() {
-  gulp.src(npmdist({ copyUnminified: true}), {base:'./node_modules'})
+  return gulp.src(npmdist({ copyUnminified: true}), {base:'./node_modules'})
     .pipe(gulp.dest('build/lib'));
 });
 
@@ -143,12 +103,63 @@ gulp.task('compress:images', function() {
     .pipe(gulp.dest(paths.img.dist))
 });
 
+gulp.task('files', ['copy:images', 'copy:staticbuild', 'copy:staticdist', 'copy:libs', 'compress:images']);
+
+/* ------------------------- *
+ *       PREPROCESSING
+ * ------------------------- */
+
+// Compile: Sass
+// Compile from Sass to vanilla CSS
+gulp.task('compile:sass', function(){
+  return gulp.src(paths.css.src)
+    .pipe(sass())
+    .pipe(postcss([ autoprefixer() ]))
+    .pipe(gulp.dest(paths.css.build))
+    .pipe(browsersync.stream());
+});
+
+// Compile: Js
+// Compile from ES6 to vanilla JavaScript
+gulp.task('compile:js', ['copy:libs'], function() {
+  return gulp.src(paths.js.src)
+    .pipe(babel({
+        presets: ['env']
+    }))
+    .pipe(gulp.dest(paths.js.build))
+    .pipe(browsersync.stream());
+});
+
+// Compile: Haml
+// Compile from Haml to vanilla HTML
+gulp.task('compile:haml', function(){
+  return gulp.src(paths.haml.src)
+    .pipe(haml())
+    .pipe(htmlbeautify({indent_size: 2}))
+    .pipe(gulp.dest(paths.html.build))
+    .pipe(browsersync.stream());
+});
+
+// Inject: Partials
+// Inject all the html partials
+gulp.task('inject:partials', ['compile:sass', 'compile:js', 'compile:haml'], function () {
+  return gulp.src(paths.html.src)
+    .pipe(fileinclude({
+      prefix: '__',
+      basepath: 'build/partials'
+    }))
+    .pipe(gulp.dest(paths.html.build))
+    .pipe(browsersync.stream());
+});
+
+gulp.task('haml', ['inject:partials']);
+
 /* ------------------------- *
  *     LOCAL DEVELOPMENT
  * ------------------------- */
 
 // Start server and watch for changes
-gulp.task('serve', ['compile:sass', 'compile:js', 'haml', 'copy:images', 'copy:staticbuild', 'copy:libs'], function() {
+gulp.task('serve', ['copy:images', 'copy:staticbuild', 'copy:libs', 'haml'], function() {
   browsersync.init({
     server: paths.server
   });
@@ -165,18 +176,27 @@ gulp.task('serve', ['compile:sass', 'compile:js', 'haml', 'copy:images', 'copy:s
  * ------------------------- */
 
 // Build files for production
-// Concat and minify styles and scripts
-gulp.task('build:files', ['compile:sass', 'compile:js', 'haml', 'copy:images', 'copy:staticbuild', 'copy:staticdist', 'compress:images', 'copy:libs'], function () {
+// Concat using useref
+gulp.task('build:files', ['files', 'haml'], function () {
     return gulp.src(paths.html.src)
       .pipe(useref({searchPath: 'build'}))
-      .pipe(gulpif('*.js', uglify()))
-      .pipe(gulpif('*.css', cleancss()))
       .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
       .pipe(gulp.dest(paths.html.dist));
 });
 
+// Generate the sourcemaps
+gulp.task('sourcemaps', ['build:files'], function () {
+   return gulp.src('dist/**/*.{css,js}')
+     .pipe(sourcemaps.init())
+       .pipe(gulpif('*.js', uglify()))
+       error.log()
+       .pipe(gulpif('*.css', cleancss()))
+     .pipe(sourcemaps.write('.'))
+     .pipe(gulp.dest(paths.html.dist));
+});
+
 // We don't want partials to render in the dist folder, so delete them
-gulp.task('clean:partials', ['build:files'], function () {
+gulp.task('clean:partials', ['sourcemaps'], function () {
   return del([
     'dist/partials'
   ]);
