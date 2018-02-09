@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "A simple front-end Gulp workflow for Haml, Sass, and ES6",
   "main": "index.js",
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -44,6 +48,7 @@
   "dependencies": {
     "bootstrap": "^4.0.0",
     "jquery": "^3.3.1",
+    "normalize.css": "^8.0.0",
     "popper.js": "^1.12.9"
   }
 }
