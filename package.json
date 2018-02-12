@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/melanieseltzer/gulp-haml-boilerplate#readme",
   "devDependencies": {
-    "autoprefixer": "^7.2.5",
+    "autoprefixer": "^8.0.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.20.0",

@@ -28,7 +28,7 @@ var useref = require('gulp-useref');
 var base = {
   // Your Github pages base URL
   // Same name as your repo
-  url: '/gulp-haml-boilerplate/'
+  url: '/static-frontend-boilerplate/'
 }
 
 /* ------------------------- *
