@@ -1,7 +1,7 @@
-# Gulp Haml Boilerplate
+# Static Frontend Boilerplate
 [![dependencies Status](https://david-dm.org/melanieseltzer/gulp-haml-boilerplate/status.svg)](https://david-dm.org/melanieseltzer/gulp-haml-boilerplate) [![devDependencies Status](https://david-dm.org/melanieseltzer/gulp-haml-boilerplate/dev-status.svg)](https://david-dm.org/melanieseltzer/gulp-haml-boilerplate?type=dev)
 
-My personal front-end Gulp workflow for Haml and Sass. A simple boilerplate to get you up and running quickly. Uses BrowserSync for live-reloading in the browser. Less refreshing, more coding! :fire:
+A simple boilerplate to get you up and running quickly, using Gulp, Haml, Sass, and BrowserSync for live-reloading in the browser. Less refreshing, more coding! :fire:
 
 ## Thanks :+1:
 
