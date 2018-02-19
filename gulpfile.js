@@ -145,7 +145,8 @@ gulp.task('compile:haml', function(){
 gulp.task('inject:partials', ['compile:sass', 'compile:js', 'compile:haml'], function () {
   return gulp.src(paths.html.src)
     .pipe(fileinclude({
-      prefix: '__',
+      prefix: '<!-- @@',
+      suffix: ' -->',
       basepath: 'build/partials'
     }))
     .pipe(gulp.dest(paths.html.build))
@@ -186,10 +187,9 @@ gulp.task('build:files', ['files', 'haml'], function () {
 
 // Generate the sourcemaps
 gulp.task('sourcemaps', ['build:files'], function () {
-   return gulp.src('dist/**/*.{css,js}')
+   gulp.src('dist/**/*.{css,js}')
      .pipe(sourcemaps.init())
        .pipe(gulpif('*.js', uglify()))
-       error.log()
        .pipe(gulpif('*.css', cleancss()))
      .pipe(sourcemaps.write('.'))
      .pipe(gulp.dest(paths.html.dist));

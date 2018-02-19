@@ -33,7 +33,6 @@
     "gulp-file-include": "^2.0.1",
     "gulp-gh-pages": "^0.5.4",
     "gulp-haml": "^1.0.1",
-    "gulp-html-beautify": "^1.0.1",
     "gulp-htmlmin": "^4.0.0",
     "gulp-if": "^2.0.2",
     "gulp-imagemin": "^4.1.0",
@@ -42,11 +41,12 @@
     "gulp-replace": "^0.6.1",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.4",
-    "gulp-uglify-es": "^1.0.0",
+    "gulp-uglify-es": "^1.0.1",
     "gulp-useref": "^3.1.4"
   },
   "dependencies": {
     "bootstrap": "^4.0.0",
+    "gulp-html-beautify": "^1.0.1",
     "jquery": "^3.3.1",
     "normalize.css": "^8.0.0",
     "popper.js": "^1.12.9"
