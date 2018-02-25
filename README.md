@@ -3,7 +3,7 @@
 
 An easy starter boilerplate for static websites, to get you up and coding quickly. Uses Gulp/Haml/Sass/BrowserSync :fire:
 
-## Getting Started
+## :point_right: Getting Started
 
 ### Prerequisites
 
