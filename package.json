@@ -1,5 +1,5 @@
 {
-  "name": "gulp-haml-boilerplate",
+  "name": "static-frontend-boilerplate",
   "version": "1.0.0",
   "description": "A simple front-end Gulp workflow for Haml, Sass, and ES6",
   "main": "index.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/melanieseltzer/gulp-haml-boilerplate.git"
+    "url": "git+https://github.com/melanieseltzer/static-frontend-boilerplate.git"
   },
   "author": "Melanie Seltzer",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/melanieseltzer/gulp-haml-boilerplate/issues"
+    "url": "https://github.com/melanieseltzer/static-frontend-boilerplate/issues"
   },
-  "homepage": "https://github.com/melanieseltzer/gulp-haml-boilerplate#readme",
+  "homepage": "https://github.com/melanieseltzer/static-frontend-boilerplate#readme",
   "devDependencies": {
     "autoprefixer": "^8.0.0",
     "babel-core": "^6.26.0",

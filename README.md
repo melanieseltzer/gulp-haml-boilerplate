@@ -1,5 +1,5 @@
 # Static Frontend Boilerplate
-[![dependencies Status](https://david-dm.org/melanieseltzer/gulp-haml-boilerplate/status.svg)](https://david-dm.org/melanieseltzer/gulp-haml-boilerplate) [![devDependencies Status](https://david-dm.org/melanieseltzer/gulp-haml-boilerplate/dev-status.svg)](https://david-dm.org/melanieseltzer/gulp-haml-boilerplate?type=dev)
+[![dependencies Status](https://david-dm.org/melanieseltzer/static-frontend-boilerplate/status.svg)](https://david-dm.org/melanieseltzer/static-frontend-boilerplate) [![devDependencies Status](https://david-dm.org/melanieseltzer/static-frontend-boilerplate/dev-status.svg)](https://david-dm.org/melanieseltzer/static-frontend-boilerplate?type=dev)
 
 A simple boilerplate to get you up and running quickly, using Gulp, Haml, Sass, and BrowserSync for live-reloading in the browser. Less refreshing, more coding! :fire:
 
@@ -19,8 +19,8 @@ This boilerplate uses:
 Clone repo and cd into project directory:
 
 ```
-git clone git@github.com:melanieseltzer/gulp-haml-boilerplate.git
-cd gulp-haml-boilerplate
+git clone git@github.com:melanieseltzer/static-frontend-boilerplate.git
+cd static-frontend-boilerplate
 ```
 
 Install dependencies:
@@ -35,7 +35,7 @@ Set your base path in the Gulpfile, if deploying to Github Pages:
 var base = {
   // Your Github pages base URL
   // Same name as your repo
-  url: '/gulp-haml-boilerplate/'
+  url: '/static-frontend-boilerplate/'
 }
 
 ```
@@ -73,7 +73,7 @@ gulp clean:dist
 Develop your site in the `src` directory. You can choose to commit `build` or `dist` folders by removing them from .gitignore (up to you).
 
 ```
-gulp-haml-boilerplate/
+static-frontend-boilerplate/
 |—— build/
 |   |—— css/
 |   |   |—— vendor/
