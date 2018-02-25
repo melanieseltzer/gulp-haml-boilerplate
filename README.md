@@ -3,16 +3,14 @@
 
 An easy starter boilerplate for static websites, to get you up and coding quickly. Uses Gulp/Haml/Sass/BrowserSync :fire:
 
-## Using
+## Getting Started
+
+### Prerequisites
 
 - [Node.js](https://nodejs.org/en/)
-- [Gulp 3](https://gulpjs.com/)
-- [Sass](http://sass-lang.com/)
 - [Haml](http://haml.info/)
-- [Babel](https://babeljs.io/)
-- [BrowserSync](https://browsersync.io/)
 
-## Start
+### Installing
 
 Clone repo and cd into project directory:
 
@@ -38,7 +36,7 @@ var base = {
 
 ```
 
-## Task runners
+## :rocket: Commands
 
 Serve locally from `build`. BrowserSync watches for changes in `src` and automatically reloads the browser:
 
@@ -66,7 +64,7 @@ gulp clean:build
 gulp clean:dist
 ```
 
-## Folder Structure
+## :file_folder: Folder Structure
 
 Develop your site in the `src` directory. You can choose to commit `build` or `dist` folders by removing them from .gitignore (up to you).
 
@@ -142,7 +140,7 @@ static-frontend-boilerplate/
 |—— README.md
 ```
 
-## Configurable Options
+## :wrench: Configurable Options
 
 If you plan to publish to Github pages, you will need to do a base path declaration. This is because Github Pages serves files from a folder named after your repo (e.g. https://username.github.io/reponame/) instead of root (https://username.github.io).
 
@@ -189,6 +187,14 @@ var paths = {
     }
 };
 ```
+
+## :heart: Built With
+
+- [Gulp 3](https://gulpjs.com/)
+- [Sass](http://sass-lang.com/)
+- [Haml](http://haml.info/)
+- [Babel](https://babeljs.io/)
+- [BrowserSync](https://browsersync.io/)
 
 ## License
 
