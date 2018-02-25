@@ -1,11 +1,9 @@
 # Static Frontend Boilerplate
-[![dependencies Status](https://david-dm.org/melanieseltzer/static-frontend-boilerplate/status.svg)](https://david-dm.org/melanieseltzer/static-frontend-boilerplate) [![devDependencies Status](https://david-dm.org/melanieseltzer/static-frontend-boilerplate/dev-status.svg)](https://david-dm.org/melanieseltzer/static-frontend-boilerplate?type=dev)
+[![dependencies Status](https://david-dm.org/melanieseltzer/static-frontend-boilerplate/status.svg)](https://david-dm.org/melanieseltzer/static-frontend-boilerplate) [![devDependencies Status](https://david-dm.org/melanieseltzer/static-frontend-boilerplate/dev-status.svg)](https://david-dm.org/melanieseltzer/static-frontend-boilerplate?type=dev) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/melanieseltzer/static-frontend-boilerplate/issues)
 
-A simple boilerplate to get you up and running quickly, using Gulp, Haml, Sass, and BrowserSync for live-reloading in the browser. Less refreshing, more coding! :fire:
+An easy starter boilerplate for static websites, to get you up and coding quickly. Uses Gulp/Haml/Sass/BrowserSync :fire:
 
-## Thanks :+1:
-
-This boilerplate uses:
+## Using
 
 - [Node.js](https://nodejs.org/en/)
 - [Gulp 3](https://gulpjs.com/)
