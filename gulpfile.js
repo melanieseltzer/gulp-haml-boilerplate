@@ -8,6 +8,7 @@ var cleancss = require('gulp-clean-css');
 var del = require('del');
 var deploy = require('gulp-gh-pages');
 var gulpif = require('gulp-if');
+var gzip = require('gulp-gzip');
 var pug = require('gulp-pug');
 var htmlbeautify = require('gulp-html-beautify');
 var htmlmin = require('gulp-htmlmin');
@@ -173,13 +174,15 @@ gulp.task('copy:compress', function() {
 });
 
 // Build files for production
-// Concat using useref
+// Concat, minify, gzip
 gulp.task('build:files', ['copy:compress', 'files'], function () {
   return gulp.src(paths.html.src)
     .pipe(useref({searchPath: 'tmp'}))
     .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
    	.pipe(gulpif('*.js', uglify()))
    	.pipe(gulpif('*.css', cleancss()))
+    .pipe(gulp.dest(paths.dist))
+    .pipe(gzip())
     .pipe(gulp.dest(paths.dist));
 });
 
