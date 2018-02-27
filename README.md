@@ -54,53 +54,33 @@ gulp clean:dist
 
 ## :file_folder: Folder Structure
 
-Develop your site in the `src` directory. Production code is built to `dist`.
-
-Dev server runs from `tmp`. It is not intended to be committed to the repo, but you may if you wish. Just make sure to put `vendor` in your `.gitignore` to not commit the vendor code.
+Develop your site in the `src` directory. Production code is built to `dist`. Dev server runs from `tmp`. It is not intended to be committed to the repo (it's deleted automatically on production build), but you may remove that and commit if you wish. 
 
 ```
 static-frontend-boilerplate/
 |—— dist/
+|   |—— assets/
+|   |   |—— img/
+|   |   |   |—— # optimized images
+|   |   |—— fonts/
+|   |   |—— pdfs/
+|   |   |—— etc...
 |   |—— css/
 |   |   |—— all.min.css (packaged and minified)
-|   |—— img/
-|   |   |—— # optimized images
 |   |—— js/
 |   |   |—— all.min.js (packaged and minified)
-|   |—— static/
-|   |   |—— fonts/
-|   |   |—— pdfs/
-|   |   |—— etc...
 |   |—— test-directory/
 |   |   |—— index.html
-|   |—— index.html
-|—— tmp/
-|   |—— css/
-|   |   |—— main.css
-|   |   |—— main.css.map
-|   |—— img/
-|   |   |—— # unoptimized images
-|   |—— js/
-|   |   |—— main.js
-|   |   |—— main.js.map
-|   |—— static/
-|   |   |—— fonts/
-|   |   |—— pdfs/
-|   |   |—— etc...
-|   |—— test-directory/
-|   |   |—— index.html
-|   |—— vendor/
-|   |   |—— # dependencies from package.json
 |   |—— index.html
 |—— src/
-|   |—— img/
-|   |   |—— # unoptimized images
-|   |—— js/
-|   |   |—— main.js
-|   |—— static/
+|   |—— assets/
+|   |   |—— img/
+|   |   |   |—— # unoptimized images
 |   |   |—— fonts/
 |   |   |—— pdfs/
 |   |   |—— etc...
+|   |—— js/
+|   |   |—— main.js
 |   |—— styles/
 |   |   |—— base/
 |   |   |—— components/
@@ -119,6 +99,22 @@ static-frontend-boilerplate/
 |   |   |—— test-directory/
 |   |   |   |—— index.pug
 |   |   |—— index.pug
+|—— tmp/
+|   |—— assets/
+|   |   |—— img/
+|   |   |   |—— # unoptimized images
+|   |   |—— fonts/
+|   |   |—— pdfs/
+|   |   |—— etc...
+|   |—— css/
+|   |   |—— main.css
+|   |   |—— main.css.map
+|   |—— js/
+|   |   |—— main.js
+|   |   |—— main.js.map
+|   |—— test-directory/
+|   |   |—— index.html
+|   |—— index.html
 |—— .gitignore
 |—— gulfile.js
 |—— LICENSE
@@ -143,16 +139,10 @@ Set your paths. You can modify depending on your workflow/naming conventions.
 
 ```
 var paths = {
-    server: 'tmp',
-    img: {
-        src: 'src/img/**/*',
-        tmp: 'tmp/img',
-        dist: 'dist/img'
-    },
-    static: {
-        src: 'src/static/**/*',
-        tmp: 'tmp/static',
-        dist: 'dist/static'
+    assets: {
+        src: 'src/assets/**/*',
+        tmp: 'tmp/assets',
+        dist: 'dist/assets'
     },
     js: {
         src: 'src/js/**/*.js',
@@ -168,10 +158,11 @@ var paths = {
         src: 'src/views/**/!(_)*.pug'
     },
     html: {
-        src: 'tmp/**/*.html',
-        tmp: 'tmp',
-        dist: 'dist'
-    }
+        src: 'tmp/**/*.html'
+    },
+    src: 'src',
+    tmp: 'tmp',
+    dist: 'dist'
 };
 ```
 

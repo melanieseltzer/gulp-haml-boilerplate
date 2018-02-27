@@ -1,29 +1,34 @@
 @charset 'UTF-8';
 
-// 1. Helpers
+// Vendor
+@import
+  'normalize',
+  'bootstrap';
+
+// Helpers
 @import
   'helpers/variables',
   'helpers/functions',
   'helpers/mixins';
 
-// 2. Base stuff
+// Base stuff
 @import
   'base/reset',
   // 'base/fonts',
   'base/typography',
   'base/colors';
 
-// 3. Layout
+// Layout
 @import
   'layout/grid';
   // 'layout/header',
   // 'layout/footer',
   // 'layout/forms';
 
-// 4. Components
+// Components
 // @import
 //   'components/buttons',
 //   'components/navigation';
 
-// 5. Page-specific styles
+// Page-specific styles
 // @import 'pages/home';
