@@ -67,11 +67,15 @@ static-frontend-boilerplate/
 |   |   |—— etc...
 |   |—— css/
 |   |   |—— all.min.css (packaged and minified)
+|   |   |—— all.min.css.gz (gzip compression)
 |   |—— js/
 |   |   |—— all.min.js (packaged and minified)
+|   |   |—— all.min.js.gz (gzip compression)
 |   |—— test-directory/
 |   |   |—— index.html
+|   |   |—— index.html.gz (gzip compression)
 |   |—— index.html
+|   |—— index.html.gz (gzip compression)
 |—— src/
 |   |—— assets/
 |   |   |—— img/
