@@ -1,7 +1,7 @@
 {
   "name": "static-frontend-boilerplate",
   "version": "1.0.0",
-  "description": "Frontend boilerplate for static websites using Gulp/BrowserSync, and Pug for templating.",
+  "description": "Frontend boilerplate for static websites using Gulp/BrowserSync/Pug/Sass.",
   "main": "index.js",
   "browserslist": [
     "> 1%",
