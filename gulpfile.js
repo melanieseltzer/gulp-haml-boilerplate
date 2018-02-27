@@ -28,7 +28,7 @@ var useref = require('gulp-useref');
 var base = {
   // Your Github pages base URL
   // Same name as your repo
-  url: '/assets-frontend-boilerplate/'
+  url: '/static-frontend-boilerplate/'
 }
 
 /* ------------------------- *
@@ -37,30 +37,31 @@ var base = {
 
 // Set your file paths here, modify depending on your workflow/naming
 var paths = {
-    assets: {
-        src: 'src/assets/**/*',
-        tmp: 'tmp/assets',
-        dist: 'dist/assets'
-    },
-    js: {
-        src: 'src/js/**/*.js',
-        tmp: 'tmp/js',
-        dist: 'dist/js'
-    },
-    styles: {
-        src: 'src/styles/**/*.{css,scss,sass}',
-        tmp: 'tmp/css',
-        dist: 'dist/css'
-    },
-    views: {
-        src: 'src/views/**/!(_)*.pug'
-    },
-    html: {
-        src: 'tmp/**/*.html'
-    },
-    src: 'src',
-    tmp: 'tmp',
-    dist: 'dist'
+  assets: {
+    src: 'src/assets/**/*',
+    tmp: 'tmp/assets',
+    dist: 'dist/assets'
+  },
+  js: {
+    src: 'src/js/**/*.js',
+    tmp: 'tmp/js',
+    dist: 'dist/js'
+  },
+  styles: {
+    src: 'src/styles/**/*.{css,scss,sass}',
+    tmp: 'tmp/css',
+    dist: 'dist/css'
+  },
+  views: {
+    src: 'src/views/**/*.pug',
+    _src: 'src/views/**/!(_)*.pug'
+  },
+  html: {
+    src: 'tmp/**/*.html'
+  },
+  src: 'src',
+  tmp: 'tmp',
+  dist: 'dist'
 };
 
 /* ------------------------- *
@@ -103,6 +104,7 @@ gulp.task('compile:sass', function(){
     .pipe(browsersync.stream());
 });
 
+// Compile Js
 gulp.task('compile:js', function () {
   var b = browserify({
     entries: './src/js/main.js',
@@ -128,7 +130,7 @@ gulp.task('compile:js', function () {
 
 // Compile Pug
 gulp.task('compile:pug', function(){
-  return gulp.src(paths.views.src)
+  return gulp.src(paths.views._src)
     .pipe(pug())
     .pipe(htmlbeautify({indent_size: 2}))
     .pipe(gulp.dest(paths.tmp))
@@ -153,7 +155,7 @@ gulp.task('serve', ['copy', 'files'], function() {
     server: paths.tmp
   });
   gulp.watch(paths.styles.src, ['compile:sass']);
-  gulp.watch('src/views/**/*.pug', ['compile:pug']);
+  gulp.watch(paths.views.src, ['compile:pug']);
   gulp.watch(paths.js.src, ['compile:js']);
   gulp.watch(paths.tmp + '/**/*').on('change', browsersync.reload);
 });
@@ -173,26 +175,26 @@ gulp.task('copy:compress', function() {
 // Build files for production
 // Concat using useref
 gulp.task('build:files', ['copy:compress', 'files'], function () {
-    return gulp.src(paths.html.src)
-      .pipe(useref({searchPath: 'tmp'}))
-      .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
-     	.pipe(gulpif('*.js', uglify()))
-     	.pipe(gulpif('*.css', cleancss()))
-      .pipe(gulp.dest(paths.dist));
+  return gulp.src(paths.html.src)
+    .pipe(useref({searchPath: 'tmp'}))
+    .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
+   	.pipe(gulpif('*.js', uglify()))
+   	.pipe(gulpif('*.css', cleancss()))
+    .pipe(gulp.dest(paths.dist));
 });
 
 // Replace Base path
 // For Github pages we have to replace the base path
 // Remove this if not using Github pages
 gulp.task('replace:basepath', ['build:files'], function () {
- return gulp.src('dist/**/*.{html,css}')
-  // For relative links and stylesheet refs
-  .pipe(replace('href="/', 'href="' + base.url))
-  // For any src references e.g <img>, <script>
-  .pipe(replace('src="/', 'src="' + base.url))
-  // For font-face references
-  .pipe(replace('url(/', 'url(' + base.url))
-  .pipe(gulp.dest('dist'));
+  return gulp.src('dist/**/*.{html,css}')
+    // For relative links and stylesheet refs
+    .pipe(replace('href="/', 'href="' + base.url))
+    // For any src references e.g <img>, <script>
+    .pipe(replace('src="/', 'src="' + base.url))
+    // For font-face references
+    .pipe(replace('url(/', 'url(' + base.url))
+    .pipe(gulp.dest('dist'));
 });
 
 gulp.task('build', ['replace:basepath'], function () {
