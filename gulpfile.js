@@ -151,7 +151,7 @@ gulp.task('serve', ['copy:images', 'copy:statictmp', 'copy:vendor', 'pug'], func
     server: paths.server
   });
   gulp.watch(paths.styles.src, ['compile:sass']);
-  gulp.watch(paths.views.src, ['pug']);
+  gulp.watch('src/views/**/*.pug', ['compile:pug']);
   gulp.watch(paths.js.src, ['compile:js']);
   gulp.watch(paths.styles.src).on('change', browsersync.reload);
   gulp.watch(paths.html.src).on('change', browsersync.reload);
