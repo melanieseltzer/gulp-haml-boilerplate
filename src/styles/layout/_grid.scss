@@ -1,0 +1,12 @@
+.profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  flex-flow: column;
+  img {
+    width: 300px;
+    margin: 20px 0;
+    box-shadow: 0 0 20px $primary-dark;
+  }
+}

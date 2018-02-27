@@ -5,13 +5,11 @@ var browsersync = require('browser-sync').create();
 var cleancss = require('gulp-clean-css');
 var del = require('del');
 var deploy = require('gulp-gh-pages');
-var fileinclude = require('gulp-file-include');
 var gulpif = require('gulp-if');
-var haml = require('gulp-haml');
+var pug = require('gulp-pug');
 var htmlbeautify = require('gulp-html-beautify');
 var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
-var log = require('fancy-log');
 var npmdist = require('gulp-npm-dist');
 var postcss = require('gulp-postcss');
 var replace = require('gulp-replace');
@@ -37,33 +35,33 @@ var base = {
 
 // Set your file paths here, modify depending on your workflow/naming
 var paths = {
-    server: 'build',
+    server: 'tmp',
     img: {
         src: 'src/img/**/*',
-        build: 'build/img',
+        tmp: 'tmp/img',
         dist: 'dist/img'
     },
     static: {
         src: 'src/static/**/*',
-        build: 'build/static',
+        tmp: 'tmp/static',
         dist: 'dist/static'
     },
     js: {
         src: 'src/js/**/*.js',
-        build: 'build/js',
+        tmp: 'tmp/js',
         dist: 'dist/js'
     },
-    css: {
-        src: 'src/sass/**/*.{css,scss,sass}',
-        build: 'build/css',
+    styles: {
+        src: 'src/styles/**/*.{css,scss,sass}',
+        tmp: 'tmp/css',
         dist: 'dist/css'
     },
-    haml: {
-        src: 'src/haml/**/*.haml'
+    views: {
+        src: 'src/views/**/!(_)*.pug'
     },
     html: {
-        src: 'build/**/*.html',
-        build: 'build',
+        src: 'tmp/**/*.html',
+        tmp: 'tmp',
         dist: 'dist'
     }
 };
@@ -75,13 +73,13 @@ var paths = {
 // Copy: Images
 gulp.task('copy:images', function() {
  return gulp.src(paths.img.src)
-    .pipe(gulp.dest(paths.img.build));
+    .pipe(gulp.dest(paths.img.tmp));
 });
 
 // Copy: Static files
-gulp.task('copy:staticbuild', function() {
+gulp.task('copy:statictmp', function() {
  return gulp.src(paths.static.src)
-    .pipe(gulp.dest(paths.static.build));
+    .pipe(gulp.dest(paths.static.tmp));
 });
 
 // Copy: Static files
@@ -91,9 +89,9 @@ gulp.task('copy:staticdist', function() {
 });
 
 // Copy: Dependencies
-gulp.task('copy:libs', function() {
+gulp.task('copy:vendor', function() {
   return gulp.src(npmdist({ copyUnminified: true}), {base:'./node_modules'})
-    .pipe(gulp.dest('build/lib'));
+    .pipe(gulp.dest('tmp/vendor'));
 });
 
 // Compress: Images
@@ -103,71 +101,59 @@ gulp.task('compress:images', function() {
     .pipe(gulp.dest(paths.img.dist))
 });
 
-gulp.task('files', ['copy:images', 'copy:staticbuild', 'copy:staticdist', 'copy:libs', 'compress:images']);
+gulp.task('files', ['copy:images', 'copy:statictmp', 'copy:staticdist', 'copy:vendor', 'compress:images']);
 
 /* ------------------------- *
  *       PREPROCESSING
  * ------------------------- */
 
-// Compile: Sass
-// Compile from Sass to vanilla CSS
+// Compile Sass
 gulp.task('compile:sass', function(){
-  return gulp.src(paths.css.src)
+  return gulp.src(paths.styles.src)
+		.pipe(sourcemaps.init())
     .pipe(sass())
     .pipe(postcss([ autoprefixer() ]))
-    .pipe(gulp.dest(paths.css.build))
+		.pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest(paths.styles.tmp))
     .pipe(browsersync.stream());
 });
 
-// Compile: Js
-// Compile from ES6 to vanilla JavaScript
-gulp.task('compile:js', ['copy:libs'], function() {
+// Compile Js
+gulp.task('compile:js', ['copy:vendor'], function() {
   return gulp.src(paths.js.src)
+		.pipe(sourcemaps.init())
     .pipe(babel({
         presets: ['env']
     }))
-    .pipe(gulp.dest(paths.js.build))
+		.pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest(paths.js.tmp))
     .pipe(browsersync.stream());
 });
 
-// Compile: Haml
-// Compile from Haml to vanilla HTML
-gulp.task('compile:haml', function(){
-  return gulp.src(paths.haml.src)
-    .pipe(haml())
+// Compile Pug
+gulp.task('compile:pug', function(){
+  return gulp.src(paths.views.src)
+    .pipe(pug())
     .pipe(htmlbeautify({indent_size: 2}))
-    .pipe(gulp.dest(paths.html.build))
+    .pipe(gulp.dest(paths.html.tmp))
     .pipe(browsersync.stream());
 });
 
-// Inject: Partials
-// Inject all the html partials
-gulp.task('inject:partials', ['compile:sass', 'compile:js', 'compile:haml'], function () {
-  return gulp.src(paths.html.src)
-    .pipe(fileinclude({
-      prefix: '<!-- @@',
-      suffix: ' -->',
-      basepath: 'build/partials'
-    }))
-    .pipe(gulp.dest(paths.html.build))
-    .pipe(browsersync.stream());
-});
-
-gulp.task('haml', ['inject:partials']);
+gulp.task('pug', ['compile:sass', 'compile:js', 'compile:pug']);
 
 /* ------------------------- *
  *     LOCAL DEVELOPMENT
  * ------------------------- */
 
 // Start server and watch for changes
-gulp.task('serve', ['copy:images', 'copy:staticbuild', 'copy:libs', 'haml'], function() {
+gulp.task('serve', ['copy:images', 'copy:statictmp', 'copy:vendor', 'pug'], function() {
   browsersync.init({
     server: paths.server
   });
-  gulp.watch(paths.css.src, ['compile:sass']);
-  gulp.watch(paths.haml.src, ['haml']);
+  gulp.watch(paths.styles.src, ['compile:sass']);
+  gulp.watch(paths.views.src, ['pug']);
   gulp.watch(paths.js.src, ['compile:js']);
-  gulp.watch(paths.css.src).on('change', browsersync.reload);
+  gulp.watch(paths.styles.src).on('change', browsersync.reload);
   gulp.watch(paths.html.src).on('change', browsersync.reload);
   gulp.watch(paths.js.src).on('change', browsersync.reload);
 });
@@ -178,34 +164,19 @@ gulp.task('serve', ['copy:images', 'copy:staticbuild', 'copy:libs', 'haml'], fun
 
 // Build files for production
 // Concat using useref
-gulp.task('build:files', ['files', 'haml'], function () {
+gulp.task('build:files', ['files', 'pug'], function () {
     return gulp.src(paths.html.src)
-      .pipe(useref({searchPath: 'build'}))
+      .pipe(useref({searchPath: 'tmp'}))
       .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
+     	.pipe(gulpif('*.js', uglify()))
+     	.pipe(gulpif('*.css', cleancss()))
       .pipe(gulp.dest(paths.html.dist));
-});
-
-// Generate the sourcemaps
-gulp.task('sourcemaps', ['build:files'], function () {
-   gulp.src('dist/**/*.{css,js}')
-     .pipe(sourcemaps.init())
-       .pipe(gulpif('*.js', uglify()))
-       .pipe(gulpif('*.css', cleancss()))
-     .pipe(sourcemaps.write('.'))
-     .pipe(gulp.dest(paths.html.dist));
-});
-
-// We don't want partials to render in the dist folder, so delete them
-gulp.task('clean:partials', ['sourcemaps'], function () {
-  return del([
-    'dist/partials'
-  ]);
 });
 
 // Replace Base path
 // For Github pages we have to replace the base path
 // Remove this if not using Github pages
-gulp.task('replace:basepath', ['clean:partials'], function () {
+gulp.task('replace:basepath', ['build:files'], function () {
  return gulp.src('dist/**/*.{html,css}')
   // For relative links and stylesheet refs
   .pipe(replace('href="/', 'href="' + base.url))
@@ -232,9 +203,9 @@ gulp.task('deploy', ['build'], function() {
  *         CLEANUP
  * ------------------------- */
 
-gulp.task('clean:build', function () {
+gulp.task('clean:tmp', function () {
   return del([
-    'build'
+    'tmp'
   ]);
 });
 
@@ -244,8 +215,8 @@ gulp.task('clean:dist', function () {
   ]);
 });
 
-// Delete build and dist folder for easy cleanup
-gulp.task('clean', ['clean:build', 'clean:dist']);
+// Delete tmp and dist folder for easy cleanup
+gulp.task('clean', ['clean:tmp', 'clean:dist']);
 
 /* ------------------------- *
  *         DEFAULT

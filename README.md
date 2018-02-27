@@ -1,14 +1,13 @@
 # Static Frontend Boilerplate
 [![dependencies Status](https://david-dm.org/melanieseltzer/static-frontend-boilerplate/status.svg)](https://david-dm.org/melanieseltzer/static-frontend-boilerplate) [![devDependencies Status](https://david-dm.org/melanieseltzer/static-frontend-boilerplate/dev-status.svg)](https://david-dm.org/melanieseltzer/static-frontend-boilerplate?type=dev) [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/melanieseltzer/static-frontend-boilerplate/issues)
 
-An easy starter boilerplate for static websites, to get you up and coding quickly. Uses Gulp/Haml/Sass/BrowserSync :fire:
+An easy starter boilerplate for static websites, to get you up and coding quickly. Uses Gulp and BrowserSync for local development, Sass for preprocessing, and Pug for templating :fire:
 
 ## :point_right: Getting Started
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/en/)
-- [Haml](http://haml.info/)
 
 ### Installing
 
@@ -25,20 +24,9 @@ Install dependencies:
 npm install
 ```
 
-Set your base path in the Gulpfile, if deploying to Github Pages:
-
-```
-var base = {
-  // Your Github pages base URL
-  // Same name as your repo
-  url: '/static-frontend-boilerplate/'
-}
-
-```
-
 ## :rocket: Commands
 
-Serve locally from `build`. BrowserSync watches for changes in `src` and automatically reloads the browser:
+Serve locally from `tmp`. BrowserSync watches for changes in `src` and automatically reloads the browser:
 
 ```
 gulp serve
@@ -56,45 +44,22 @@ Deploy `dist` directory to GitHub Pages (gh-pages branch):
 gulp deploy
 ```
 
-Delete `build` and `dist` folders for easy cleanup:
+Delete `tmp` and `dist` folders for easy cleanup:
 
 ```
 gulp clean (both)
-gulp clean:build
+gulp clean:tmp
 gulp clean:dist
 ```
 
 ## :file_folder: Folder Structure
 
-Develop your site in the `src` directory. You can choose to commit `build` or `dist` folders by removing them from .gitignore (up to you).
+Develop your site in the `src` directory. Production code is built to `dist`.
+
+Dev server runs from `tmp`. It is not intended to be committed to the repo, but you may if you wish. Just make sure to put `vendor` in your `.gitignore` to not commit the vendor code.
 
 ```
 static-frontend-boilerplate/
-|—— build/
-|   |—— css/
-|   |   |—— vendor/
-|   |   |   |—— # your vendor files
-|   |   |—— styles.css
-|   |—— img/
-|   |   |—— # unoptimized images
-|   |—— js/
-|   |   |—— vendor/
-|   |   |   |—— # your vendor files
-|   |   |—— app.js
-|   |—— lib/
-|   |   |—— # dependencies from package.json
-|   |—— partials/
-|   |   |—— _footer.html
-|   |   |—— _head.html
-|   |   |—— _header.html
-|   |—— static/
-|   |   |—— fonts/
-|   |   |   |—— # font files
-|   |   |—— pdfs/
-|   |   |—— etc...
-|   |—— test-directory/
-|   |   |—— index.html
-|   |—— index.html
 |—— dist/
 |   |—— css/
 |   |   |—— all.min.css (packaged and minified)
@@ -104,38 +69,60 @@ static-frontend-boilerplate/
 |   |   |—— all.min.js (packaged and minified)
 |   |—— static/
 |   |   |—— fonts/
-|   |   |   |—— # font files
 |   |   |—— pdfs/
 |   |   |—— etc...
 |   |—— test-directory/
 |   |   |—— index.html
 |   |—— index.html
-|—— src/
-|   |—— haml/
-|   |   |—— partials/
-|   |   |   |—— _footer.haml
-|   |   |   |—— _head.haml
-|   |   |   |—— _header.haml
-|   |   |—— test-directory/
-|   |   |   |—— index.haml
-|   |   |—— index.haml
+|—— tmp/
+|   |—— css/
+|   |   |—— main.css
+|   |   |—— main.css.map
 |   |—— img/
 |   |   |—— # unoptimized images
 |   |—— js/
-|   |   |—— vendor/
-|   |   |   |—— # your vendor files
-|   |   |—— app.js (your custom js)
-|   |—— sass/
-|   |   |—— vendor/
-|   |   |   |—— # your vendor files
-|   |   |—— styles.scss (your custom sass)
+|   |   |—— main.js
+|   |   |—— main.js.map
 |   |—— static/
 |   |   |—— fonts/
-|   |   |   |—— # font files
 |   |   |—— pdfs/
 |   |   |—— etc...
+|   |—— test-directory/
+|   |   |—— index.html
+|   |—— vendor/
+|   |   |—— # dependencies from package.json
+|   |—— index.html
+|—— src/
+|   |—— img/
+|   |   |—— # unoptimized images
+|   |—— js/
+|   |   |—— main.js
+|   |—— static/
+|   |   |—— fonts/
+|   |   |—— pdfs/
+|   |   |—— etc...
+|   |—— styles/
+|   |   |—— base/
+|   |   |—— components/
+|   |   |—— helpers/
+|   |   |—— layout/
+|   |   |—— pages/
+|   |   |—— main.scss
+|   |—— views/
+|   |   |—— includes/
+|   |   |   |—— _footer.pug
+|   |   |   |—— _header.pug
+|   |   |   |—— _scripts.pug
+|   |   |   |—— _styles.pug
+|   |   |—— layouts/
+|   |   |   |—— _default.pug
+|   |   |—— test-directory/
+|   |   |   |—— index.pug
+|   |   |—— index.pug
 |—— .gitignore
 |—— gulfile.js
+|—— LICENSE
+|—— package-lock.json
 |—— package.json
 |—— README.md
 ```
@@ -156,33 +143,33 @@ Set your paths. You can modify depending on your workflow/naming conventions.
 
 ```
 var paths = {
-    server: 'build',
+    server: 'tmp',
     img: {
         src: 'src/img/**/*',
-        build: 'build/img',
+        tmp: 'tmp/img',
         dist: 'dist/img'
     },
     static: {
         src: 'src/static/**/*',
-        build: 'build/static',
+        tmp: 'tmp/static',
         dist: 'dist/static'
     },
     js: {
         src: 'src/js/**/*.js',
-        build: 'build/js',
+        tmp: 'tmp/js',
         dist: 'dist/js'
     },
-    css: {
-        src: 'src/sass/**/*.{css,scss,sass}',
-        build: 'build/css',
+    styles: {
+        src: 'src/styles/**/*.{css,scss,sass}',
+        tmp: 'tmp/css',
         dist: 'dist/css'
     },
-    haml: {
-        src: 'src/haml/**/*.haml'
+    views: {
+        src: 'src/views/**/!(_)*.pug'
     },
     html: {
-        src: 'build/**/*.html',
-        build: 'build',
+        src: 'tmp/**/*.html',
+        tmp: 'tmp',
         dist: 'dist'
     }
 };
@@ -191,8 +178,8 @@ var paths = {
 ## :heart: Built With
 
 - [Gulp 3](https://gulpjs.com/)
+- [Pug](https://pugjs.org)
 - [Sass](http://sass-lang.com/)
-- [Haml](http://haml.info/)
 - [Babel](https://babeljs.io/)
 - [BrowserSync](https://browsersync.io/)
 

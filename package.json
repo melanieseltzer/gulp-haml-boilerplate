@@ -1,7 +1,7 @@
 {
   "name": "static-frontend-boilerplate",
   "version": "1.0.0",
-  "description": "A simple front-end Gulp workflow for Haml, Sass, and ES6",
+  "description": "Frontend boilerplate for static websites using Gulp/BrowserSync, and Pug for templating.",
   "main": "index.js",
   "browserslist": [
     "> 1%",
@@ -26,24 +26,23 @@
     "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.20.0",
     "del": "^3.0.0",
-    "fancy-log": "^1.3.2",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.1",
     "gulp-clean-css": "^3.9.0",
-    "gulp-file-include": "^2.0.1",
     "gulp-gh-pages": "^0.5.4",
-    "gulp-haml": "^1.0.1",
     "gulp-html-beautify": "^1.0.1",
     "gulp-htmlmin": "^4.0.0",
     "gulp-if": "^2.0.2",
     "gulp-imagemin": "^4.1.0",
     "gulp-npm-dist": "^0.1.6",
     "gulp-postcss": "^7.0.1",
+    "gulp-pug": "^3.3.0",
     "gulp-replace": "^0.6.1",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify-es": "^1.0.1",
-    "gulp-useref": "^3.1.4"
+    "gulp-useref": "^3.1.4",
+    "pug": "^2.0.0-rc.4"
   },
   "dependencies": {
     "bootstrap": "^4.0.0",
