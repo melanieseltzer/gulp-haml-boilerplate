@@ -54,7 +54,7 @@ gulp clean:dist
 
 ## :file_folder: Folder Structure
 
-Develop your site in the `src` directory. Production code is built to `dist`. Dev server runs from `tmp`. It is not intended to be committed to the repo (it's deleted automatically on production build), but you may remove that and commit if you wish. 
+Develop your site in the `src` directory. Production code is built to `dist`. Dev server runs from `tmp`. It is not intended to be committed to the repo (it's deleted automatically on production build), but commit it if you wish.
 
 ```
 static-frontend-boilerplate/
@@ -66,11 +66,11 @@ static-frontend-boilerplate/
 |   |   |—— pdfs/
 |   |   |—— etc...
 |   |—— css/
-|   |   |—— all.min.css (packaged and minified)
-|   |   |—— all.min.css.gz (gzip compression)
+|   |   |—— all.css (packaged and minified)
+|   |   |—— all.css.gz (gzip compression)
 |   |—— js/
-|   |   |—— all.min.js (packaged and minified)
-|   |   |—— all.min.js.gz (gzip compression)
+|   |   |—— all.js (packaged and minified)
+|   |   |—— all.js.gz (gzip compression)
 |   |—— test-directory/
 |   |   |—— index.html
 |   |   |—— index.html.gz (gzip compression)
@@ -84,14 +84,14 @@ static-frontend-boilerplate/
 |   |   |—— pdfs/
 |   |   |—— etc...
 |   |—— js/
-|   |   |—— main.js
+|   |   |—— all.js
 |   |—— styles/
 |   |   |—— base/
 |   |   |—— components/
 |   |   |—— helpers/
 |   |   |—— layout/
 |   |   |—— pages/
-|   |   |—— main.scss
+|   |   |—— all.scss
 |   |—— views/
 |   |   |—— includes/
 |   |   |   |—— _footer.pug
@@ -111,11 +111,11 @@ static-frontend-boilerplate/
 |   |   |—— pdfs/
 |   |   |—— etc...
 |   |—— css/
-|   |   |—— main.css
-|   |   |—— main.css.map
+|   |   |—— all.css
+|   |   |—— all.css.map
 |   |—— js/
-|   |   |—— main.js
-|   |   |—— main.js.map
+|   |   |—— all.js
+|   |   |—— all.js.map
 |   |—— test-directory/
 |   |   |—— index.html
 |   |—— index.html
@@ -143,30 +143,31 @@ Set your paths. You can modify depending on your workflow/naming conventions.
 
 ```
 var paths = {
-    assets: {
-        src: 'src/assets/**/*',
-        tmp: 'tmp/assets',
-        dist: 'dist/assets'
-    },
-    js: {
-        src: 'src/js/**/*.js',
-        tmp: 'tmp/js',
-        dist: 'dist/js'
-    },
-    styles: {
-        src: 'src/styles/**/*.{css,scss,sass}',
-        tmp: 'tmp/css',
-        dist: 'dist/css'
-    },
-    views: {
-        src: 'src/views/**/!(_)*.pug'
-    },
-    html: {
-        src: 'tmp/**/*.html'
-    },
-    src: 'src',
-    tmp: 'tmp',
-    dist: 'dist'
+  assets: {
+    src: 'src/assets/**/*',
+    tmp: 'tmp/assets',
+    dist: 'dist/assets'
+  },
+  js: {
+    src: 'src/js/**/*.js',
+    tmp: 'tmp/js',
+    dist: 'dist/js'
+  },
+  styles: {
+    src: 'src/styles/**/*.{css,scss,sass}',
+    tmp: 'tmp/css',
+    dist: 'dist/css'
+  },
+  views: {
+    src: 'src/views/**/*.pug',
+    _src: 'src/views/**/!(_)*.pug'
+  },
+  html: {
+    src: 'tmp/**/*.html'
+  },
+  src: 'src',
+  tmp: 'tmp',
+  dist: 'dist'
 };
 ```
 
