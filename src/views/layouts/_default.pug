@@ -12,7 +12,7 @@ html
     meta(name="viewport" content="width=device-width")
 		
     block head
-      include ../includes/_styles.pug
+      link(rel="stylesheet" href="/css/all.css")
 		
   body
     block header
@@ -24,4 +24,4 @@ html
       include ../includes/_footer.pug
 		
     block scripts
-      include ../includes/_scripts.pug
+      script(src="/js/all.js")

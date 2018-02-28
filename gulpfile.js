@@ -19,7 +19,6 @@ var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 let uglify = require('gulp-uglify-es').default;
-var useref = require('gulp-useref');
 
 /* ------------------------- *
  *        BASE PATHS
@@ -85,11 +84,11 @@ gulp.task('clean:dist', function () {
 gulp.task('clean', ['clean:tmp', 'clean:dist']);
 
 /* ------------------------- *
- *       PREPROCESSING
+ *     LOCAL DEVELOPMENT
  * ------------------------- */
 
-// Compile Sass
-gulp.task('compile:sass', function(){
+// Compile to CSS for dev server
+gulp.task('tmp:sass', function(){
   return gulp.src(paths.styles.src)
 		.pipe(sourcemaps.init())
     .pipe(sass({
@@ -105,10 +104,10 @@ gulp.task('compile:sass', function(){
     .pipe(browsersync.stream());
 });
 
-// Compile Js
-gulp.task('compile:js', function () {
+// Transpile Js
+gulp.task('tmp:js', function () {
   var b = browserify({
-    entries: './src/js/main.js',
+    entries: './src/js/all.js',
     debug: true,
     paths: [
       // Vendor files
@@ -119,7 +118,7 @@ gulp.task('compile:js', function () {
   });
 
   return b.bundle()
-    .pipe(source('main.js'))
+    .pipe(source('all.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
       .pipe(babel({
@@ -129,20 +128,14 @@ gulp.task('compile:js', function () {
     .pipe(gulp.dest(paths.js.tmp));
 });
 
-// Compile Pug
-gulp.task('compile:pug', function(){
+// Compile to HTML
+gulp.task('tmp:pug', function(){
   return gulp.src(paths.views._src)
     .pipe(pug())
     .pipe(htmlbeautify({indent_size: 2}))
     .pipe(gulp.dest(paths.tmp))
     .pipe(browsersync.stream());
 });
-
-gulp.task('files', ['compile:sass', 'compile:js', 'compile:pug']);
-
-/* ------------------------- *
- *     LOCAL DEVELOPMENT
- * ------------------------- */
 
 // Copy asset files to tmp
 gulp.task('copy', function() {
@@ -151,13 +144,13 @@ gulp.task('copy', function() {
 });
 
 // Start server and watch for changes
-gulp.task('serve', ['copy', 'files'], function() {
+gulp.task('serve', ['copy', 'tmp:sass', 'tmp:js', 'tmp:pug'], function() {
   browsersync.init({
     server: paths.tmp
   });
-  gulp.watch(paths.styles.src, ['compile:sass']);
-  gulp.watch(paths.views.src, ['compile:pug']);
-  gulp.watch(paths.js.src, ['compile:js']);
+  gulp.watch(paths.styles.src, ['tmp:sass']);
+  gulp.watch(paths.views.src, ['tmp:pug']);
+  gulp.watch(paths.js.src, ['tmp:js']);
   gulp.watch(paths.tmp + '/**/*').on('change', browsersync.reload);
 });
 
@@ -173,14 +166,52 @@ gulp.task('copy:compress', function() {
     .pipe(gulp.dest(paths.assets.dist));
 });
 
-// Build files for production
-// Concat, minify, gzip
-gulp.task('build:files', ['copy:compress', 'files'], function () {
-  return gulp.src(paths.html.src)
-    .pipe(useref({searchPath: 'tmp'}))
-    .pipe(gulpif('*.html', htmlmin({collapseWhitespace: true})))
-   	.pipe(gulpif('*.js', uglify()))
-   	.pipe(gulpif('*.css', cleancss()))
+// Compile to CSS for production
+gulp.task('prod:css', function () {
+  return gulp.src(paths.styles.src)
+    .pipe(sass({
+      // Vendor files
+      includePaths: [
+        "./node_modules/normalize.css",
+        "./node_modules/bootstrap/dist/css"
+      ]
+    }))
+    .pipe(postcss([ autoprefixer() ]))
+   	.pipe(cleancss())
+    .pipe(gulp.dest(paths.styles.dist))
+    .pipe(gzip())
+    .pipe(gulp.dest(paths.styles.dist));
+});
+
+// Transpile Js for production
+gulp.task('prod:js', function () {
+  var b = browserify({
+    entries: './src/js/all.js',
+    debug: true,
+    paths: [
+      // Vendor files
+      './node_modules/jquery/dist',
+      './node_modules/popper.js/dist/umd',
+      './node_modules/bootstrap/dist/js'
+    ]
+  });
+
+  return b.bundle()
+    .pipe(source('all.js'))
+    .pipe(buffer())
+    .pipe(babel({
+      presets: ['env']
+    }))
+    .pipe(uglify())
+    .pipe(gulp.dest(paths.js.dist))
+    .pipe(gzip())
+    .pipe(gulp.dest(paths.js.dist));
+});
+
+// Compile to HTML for production
+gulp.task('prod:pug', ['prod:css', 'prod:js'], function(){
+  return gulp.src(paths.views._src)
+    .pipe(pug())
     .pipe(gulp.dest(paths.dist))
     .pipe(gzip())
     .pipe(gulp.dest(paths.dist));
@@ -189,8 +220,8 @@ gulp.task('build:files', ['copy:compress', 'files'], function () {
 // Replace Base path
 // For Github pages we have to replace the base path
 // Remove this if not using Github pages
-gulp.task('replace:basepath', ['build:files'], function () {
-  return gulp.src('dist/**/*.{html,css}')
+gulp.task('replace:basepath', ['copy:compress', 'prod:pug'], function () {
+  return gulp.src(paths.dist + '/**/*.{html,css}')
     // For relative links and stylesheet refs
     .pipe(replace('href="/', 'href="' + base.url))
     // For any src references e.g <img>, <script>
