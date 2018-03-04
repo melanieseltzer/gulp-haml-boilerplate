@@ -9,11 +9,12 @@ var del = require('del');
 var deploy = require('gulp-gh-pages');
 var gulpif = require('gulp-if');
 var gzip = require('gulp-gzip');
-var pug = require('gulp-pug');
 var htmlbeautify = require('gulp-html-beautify');
 var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
+var plumber = require('gulp-plumber');
 var postcss = require('gulp-postcss');
+var pug = require('gulp-pug');
 var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
@@ -78,6 +79,7 @@ gulp.task('clean', ['clean:tmp', 'clean:dist']);
 // Compile to CSS for dev server
 gulp.task('tmp:sass', function(){
   return gulp.src(paths.styles.src)
+    .pipe(plumber())
 		.pipe(sourcemaps.init())
     .pipe(sass({
       // Vendor files
@@ -106,6 +108,7 @@ gulp.task('tmp:js', function () {
   });
 
   return b.bundle()
+    .pipe(plumber())
     .pipe(source('all.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
@@ -119,6 +122,7 @@ gulp.task('tmp:js', function () {
 // Compile to HTML
 gulp.task('tmp:pug', function(){
   return gulp.src(paths.views._src)
+    .pipe(plumber())
     .pipe(pug())
     .pipe(htmlbeautify({indent_size: 2}))
     .pipe(gulp.dest(paths.tmp))
@@ -157,6 +161,7 @@ gulp.task('copy:compress', function() {
 // Compile to CSS for production
 gulp.task('prod:css', function () {
   return gulp.src(paths.styles.src)
+    .pipe(plumber())
     .pipe(sass({
       // Vendor files
       includePaths: [
@@ -185,6 +190,7 @@ gulp.task('prod:js', function () {
   });
 
   return b.bundle()
+    .pipe(plumber())
     .pipe(source('all.js'))
     .pipe(buffer())
     .pipe(babel({
@@ -199,6 +205,7 @@ gulp.task('prod:js', function () {
 // Compile to HTML for production
 gulp.task('prod:pug', ['copy:compress', 'prod:css', 'prod:js'], function(){
   return gulp.src(paths.views._src)
+    .pipe(plumber())
     .pipe(pug())
     .pipe(gulp.dest(paths.dist))
     .pipe(gzip())
