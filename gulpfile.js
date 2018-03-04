@@ -115,6 +115,7 @@ gulp.task('tmp:js', function () {
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
       .pipe(babel({
+        compact: false,
         presets: ['env']
       }))
     .pipe(sourcemaps.write('./'))
@@ -187,6 +188,7 @@ gulp.task('prod:js', function () {
     .pipe(source('all.js'))
     .pipe(buffer())
     .pipe(babel({
+      compact: false,
       presets: ['env']
     }))
     .pipe(uglify())
