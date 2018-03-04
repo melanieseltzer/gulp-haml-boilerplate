@@ -14,22 +14,10 @@ var htmlbeautify = require('gulp-html-beautify');
 var htmlmin = require('gulp-htmlmin');
 var imagemin = require('gulp-imagemin');
 var postcss = require('gulp-postcss');
-var replace = require('gulp-replace');
 var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
 let uglify = require('gulp-uglify-es').default;
-
-/* ------------------------- *
- *        BASE PATHS
- * ------------------------- */
-
-// If you plan to publish to Github pages, you will need to do a base path config
-var base = {
-  // Your Github pages base URL
-  // Same name as your repo
-  url: '/static-frontend-boilerplate/'
-}
 
 /* ------------------------- *
  *          PATHS
@@ -139,12 +127,12 @@ gulp.task('tmp:pug', function(){
 
 // Copy asset files to tmp
 gulp.task('copy', function() {
- return gulp.src(paths.assets.src)
+  return gulp.src(paths.assets.src)
     .pipe(gulp.dest(paths.assets.tmp));
 });
 
 // Start server and watch for changes
-gulp.task('serve', ['copy', 'tmp:sass', 'tmp:js', 'tmp:pug'], function() {
+gulp.task('serve', ['set-dev-node-env', 'copy', 'tmp:sass', 'tmp:js', 'tmp:pug'], function() {
   browsersync.init({
     server: paths.tmp
   });
@@ -209,7 +197,7 @@ gulp.task('prod:js', function () {
 });
 
 // Compile to HTML for production
-gulp.task('prod:pug', ['prod:css', 'prod:js'], function(){
+gulp.task('prod:pug', ['copy:compress', 'prod:css', 'prod:js'], function(){
   return gulp.src(paths.views._src)
     .pipe(pug())
     .pipe(gulp.dest(paths.dist))
@@ -217,21 +205,7 @@ gulp.task('prod:pug', ['prod:css', 'prod:js'], function(){
     .pipe(gulp.dest(paths.dist));
 });
 
-// Replace Base path
-// For Github pages we have to replace the base path
-// Remove this if not using Github pages
-gulp.task('replace:basepath', ['copy:compress', 'prod:pug'], function () {
-  return gulp.src(paths.dist + '/**/*.{html,css}')
-    // For relative links and stylesheet refs
-    .pipe(replace('href="/', 'href="' + base.url))
-    // For any src references e.g <img>, <script>
-    .pipe(replace('src="/', 'src="' + base.url))
-    // For font-face references
-    .pipe(replace('url(/', 'url(' + base.url))
-    .pipe(gulp.dest('dist'));
-});
-
-gulp.task('build', ['replace:basepath'], function () {
+gulp.task('build', ['prod:pug'], function () {
   return del([
     'tmp'
   ]);

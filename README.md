@@ -129,16 +129,6 @@ static-frontend-boilerplate/
 
 ## :wrench: Configurable Options
 
-If you plan to publish to Github pages, you will need to do a base path declaration. This is because Github Pages serves files from a folder named after your repo (e.g. https://username.github.io/reponame/) instead of root (https://username.github.io).
-
-Add your repo name to this variable in the gulpfile (keep the two slashes intact).
-
-```
-var base = {
-  url: '/REPONAMEHERE/'
-}
-```
-
 Set your paths. You can modify depending on your workflow/naming conventions.
 
 ```

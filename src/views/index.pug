@@ -1,11 +1,17 @@
 extends layouts/_default
 
-block variables
+block meta
   - var title = 'Pug Template Home'
   - var description = 'Example of meta description'
   - var keywords = 'keyword 1, keyword 2'
+  
+block styles
+  link(rel="stylesheet" href="css/all.css")
 
 block content
   section
     h1 Hello...
-    img(src="/assets/img/temp.jpg" alt="Michael Scott")
+    img(src="assets/img/temp.jpg" alt="Michael Scott")
+      
+block scripts
+  script(src="js/all.js")
