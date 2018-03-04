@@ -132,7 +132,7 @@ gulp.task('copy', function() {
 });
 
 // Start server and watch for changes
-gulp.task('serve', ['set-dev-node-env', 'copy', 'tmp:sass', 'tmp:js', 'tmp:pug'], function() {
+gulp.task('serve', ['copy', 'tmp:sass', 'tmp:js', 'tmp:pug'], function() {
   browsersync.init({
     server: paths.tmp
   });
