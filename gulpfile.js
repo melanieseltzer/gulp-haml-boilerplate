@@ -26,6 +26,17 @@ let uglify = require('gulp-uglify-es').default;
 
 // Set your file paths here, modify depending on your workflow/naming
 var paths = {
+  vendor: {
+    css: [
+      './node_modules/normalize.css',
+      './node_modules/bootstrap/dist/css'
+    ],
+    js: [
+      './node_modules/jquery/dist',
+      './node_modules/popper.js/dist/umd',
+      './node_modules/bootstrap/dist/js'
+    ]
+  },
   assets: {
     src: 'src/assets/**/*',
     tmp: 'tmp/assets',
@@ -82,11 +93,7 @@ gulp.task('tmp:sass', function(){
     .pipe(plumber())
 		.pipe(sourcemaps.init())
     .pipe(sass({
-      // Vendor files
-      includePaths: [
-        "./node_modules/normalize.css",
-        "./node_modules/bootstrap/dist/css"
-      ]
+      includePaths: paths.vendor.css
     }))
     .pipe(postcss([ autoprefixer() ]))
 		.pipe(sourcemaps.write('.'))
@@ -99,12 +106,7 @@ gulp.task('tmp:js', function () {
   var b = browserify({
     entries: './src/js/all.js',
     debug: true,
-    paths: [
-      // Vendor files
-      './node_modules/jquery/dist',
-      './node_modules/popper.js/dist/umd',
-      './node_modules/bootstrap/dist/js'
-    ]
+    paths: paths.vendor.js
   });
 
   return b.bundle()
@@ -163,11 +165,7 @@ gulp.task('prod:css', function () {
   return gulp.src(paths.styles.src)
     .pipe(plumber())
     .pipe(sass({
-      // Vendor files
-      includePaths: [
-        "./node_modules/normalize.css",
-        "./node_modules/bootstrap/dist/css"
-      ]
+      includePaths: paths.vendor.css
     }))
     .pipe(postcss([ autoprefixer() ]))
    	.pipe(cleancss())
@@ -181,12 +179,7 @@ gulp.task('prod:js', function () {
   var b = browserify({
     entries: './src/js/all.js',
     debug: true,
-    paths: [
-      // Vendor files
-      './node_modules/jquery/dist',
-      './node_modules/popper.js/dist/umd',
-      './node_modules/bootstrap/dist/js'
-    ]
+    paths: paths.vendor.js
   });
 
   return b.bundle()

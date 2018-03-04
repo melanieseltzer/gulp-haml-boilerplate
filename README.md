@@ -133,6 +133,19 @@ Set your paths. You can modify depending on your workflow/naming conventions.
 
 ```
 var paths = {
+  vendor: {
+    css: [
+      './node_modules/normalize.css',
+      './node_modules/bootstrap/dist/css',
+      etc...
+    ],
+    js: [
+      './node_modules/jquery/dist',
+      './node_modules/popper.js/dist/umd',
+      './node_modules/bootstrap/dist/js',
+      etc...
+    ]
+  },
   assets: {
     src: 'src/assets/**/*',
     tmp: 'tmp/assets',
