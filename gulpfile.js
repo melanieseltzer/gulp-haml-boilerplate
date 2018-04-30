@@ -28,8 +28,7 @@ let uglify = require('gulp-uglify-es').default;
 var paths = {
   vendor: {
     css: [
-      './node_modules/normalize.css',
-      './node_modules/bootstrap/dist/css'
+      './node_modules/bootstrap/scss'
     ],
     js: [
       './node_modules/jquery/dist',
